@@ -1,0 +1,7 @@
+{
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "Using Conventional Commits with GitHub Copilot: When generating commit messages with GitHub Copilot, follow the Conventional Commits specification to create clear, consistent, and machine-readable messages. Format: <type>[optional scope]: <description> [optional body][optional footer(s)]. Types include feat (new features), fix (bug fixes), docs (documentation), style (formatting), refactor (code restructuring), perf (performance), test (tests), chore (build/tools). For breaking changes, add ! after the type or include 'BREAKING CHANGE:' in the footer. Keep descriptions short (<50 chars), imperative ('add' not 'added'), include scope when helpful (e.g., feat(dashboard): add widget), split multiple changes into separate commits, and add detailed explanations in the body when needed."
+    }
+  ]
+}
