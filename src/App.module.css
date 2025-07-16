@@ -1,0 +1,46 @@
+.app {
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+}
+
+.navigation {
+  ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  flex-grow: 2;
+  input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+}
+
+.actions {
+  ul {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+}
