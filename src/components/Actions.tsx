@@ -5,7 +5,7 @@ export function Actions() {
     <div className={classes.actions}>
       <ul>
         <li>
-          <a>Nuovo progetto</a>
+          <a href="#">Nuovo progetto</a>
         </li>
       </ul>
     </div>

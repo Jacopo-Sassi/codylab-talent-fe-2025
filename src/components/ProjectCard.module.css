@@ -24,3 +24,10 @@
     }
   }
 }
+
+.newTask {
+  text-decoration: none;
+  color: #0077cc;
+  list-style: none;
+  padding: 8px;
+}

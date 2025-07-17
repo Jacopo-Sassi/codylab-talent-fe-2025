@@ -3,5 +3,16 @@
     list-style: none;
     display: flex;
     gap: 10px;
+    padding: 0;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    li {
+      a {
+        text-decoration: none;
+        color: #0077cc;
+        padding: 5px 10px;
+      }
+    }
   }
 }
