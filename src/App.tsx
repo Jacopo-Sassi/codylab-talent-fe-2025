@@ -1,39 +1,11 @@
 import classes from "./App.module.css";
-import Logo from "./assets/yplan-logo.png";
+import { Header } from "./components/Header";
 import { ProjectCard } from "./components/ProjectCard";
 
 function App() {
   return (
-    <div className={classes.app}>
-      <header className={classes.header}>
-        <div className={classes.logo}>
-          <img src={Logo} alt="logo" height={50} />
-        </div>
-        <div className={classes.navigation}>
-          <ul>
-            <li>
-              <a>Projects</a>
-            </li>
-            <li>
-              <a>Workload</a>
-            </li>
-          </ul>
-        </div>
-        <div className={classes.search}>
-          <input
-            type="text"
-            placeholder="Search projects, tasks, and more..."
-            aria-label="Search"
-          />
-        </div>
-        <div className={classes.actions}>
-          <ul>
-            <li>
-              <a>Nuovo progetto</a>
-            </li>
-          </ul>
-        </div>
-      </header>
+     <div className={classes.app}>
+      <Header />
       <main className={classes.main}>
         <ProjectCard />
         <ProjectCard />
