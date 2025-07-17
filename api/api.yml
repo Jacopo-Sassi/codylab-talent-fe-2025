@@ -1,0 +1,1138 @@
+openapi: 3.1.0
+info:
+  title: CodyLab Talent 2025 API
+  description: API for managing the CodyLab Talent 2025 project.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8090/api/v1
+    description: Local development server
+tags:
+  - name: Projects
+    description: Operations on projects
+  - name: Tasks
+    description: Operations on tasks
+  - name: Users
+    description: Operations on users
+  - name: Slots
+    description: Operations on slots
+paths:
+  /projects:
+    get:
+      summary: Retrieve all projects
+      description: Returns a list of Project objects.
+      operationId: getProjects
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+        - name: username
+          in: query
+          description: Username to filter projects
+          required: false
+          schema:
+            type: string
+        - name: projectCodes
+          in: query
+          description: Project codes to filter (array)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: List of projects successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Projects'
+        '204':
+          description: No projects found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      summary: Create a new project
+      description: Creates a new project and returns the created Project object.
+      operationId: createProject
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projects'
+      responses:
+        '201':
+          description: Project successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projects'
+        '400':
+          description: Invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Project not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /projects/{id}:
+    get:
+      summary: Retrieve a project by its ID
+      description: Returns the Project object corresponding to the provided ID.
+      operationId: getProjectById
+      tags:
+        - Projects
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the project.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Project successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projects'
+        '404':
+          description: Project not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      summary: Update an existing project
+      description: Updates the details of an existing project and returns the updated Project object.
+      operationId: updateProject
+      tags:
+        - Projects
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the project to update.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projects'
+      responses:
+        '200':
+          description: Project successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projects'
+        '400':
+          description: Invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Project not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      summary: Delete a project by its ID
+      description: Deletes the project corresponding to the provided ID.
+      operationId: deleteProject
+      tags:
+        - Projects
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the project to delete.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Project successfully deleted.
+        '404':
+          description: Project not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /tasks:
+    get:
+      summary: Retrieve all tasks
+      description: Returns a list of Task objects.
+      operationId: getTasks
+      tags:
+        - Tasks
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+        - name: userId
+          in: query
+          description: User ID
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: tasksIds
+          in: query
+          description: List of task IDs to filter (multiple supported)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+      responses:
+        '200':
+          description: List of tasks successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tasks'
+        '204':
+          description: No tasks found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      summary: Create a new task
+      description: Creates a new task and returns the created Task object.
+      operationId: createTask
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tasks'
+      responses:
+        '201':
+          description: Task successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        '400':
+          description: Invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /tasks/{id}:
+    get:
+      summary: Retrieve a task by its ID
+      description: Returns the Task object corresponding to the provided ID.
+      operationId: getTaskById
+      tags:
+        - Tasks
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the task.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Task successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        '404':
+          description: Task not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      summary: Update an existing task
+      description: Updates the details of an existing task and returns the updated Task object.
+      operationId: updateTask
+      tags:
+        - Tasks
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the task to update.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tasks'
+      responses:
+        '200':
+          description: Task successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        '400':
+          description: Invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Task not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      summary: Delete a task by its ID
+      description: Deletes the task corresponding to the provided ID.
+      operationId: deleteTask
+      tags:
+        - Tasks
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the task to delete.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Task successfully deleted.
+        '404':
+          description: Task not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /users:
+    get:
+      summary: Retrieve all users
+      description: Returns a list of User objects.
+      operationId: getUsers
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+        - name: ids
+          in: query
+          required: false
+          style: form
+          explode: true
+          description: List of user IDs to filter.
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: taskId
+          in: query
+          required: false
+          description: ID of the task associated with the user.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of users successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Users'
+        '204':
+          description: No users found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      summary: Create a new user
+      description: Creates a new user and returns the created User object.
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users'
+      responses:
+        '201':
+          description: User successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '400':
+          description: Invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /users/{id}:
+    get:
+      summary: Retrieve a user by their ID
+      description: Returns the User object corresponding to the provided ID.
+      operationId: getUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the user.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      summary: Update an existing user
+      description: Updates the details of an existing user and returns the updated User object.
+      operationId: updateUser
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the user to update.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users'
+      responses:
+        '200':
+          description: User successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '400':
+          description: Invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      summary: Delete a user by their ID
+      description: Deletes the user corresponding to the provided ID.
+      operationId: deleteUser
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the user to delete.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User successfully deleted.
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /slots:
+    get:
+      summary: Retrieve all slots
+      description: Returns a list of Slot objects. You can filter by multiple slot IDs (e.g., 1,2,3) using the ids parameter.
+      operationId: getSlots
+      tags:
+        - Slots
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+        - name: ids
+          in: query
+          description: List of slot IDs to filter, comma-separated (e.g., 1,2,3)
+          required: false
+          schema:
+            type: string
+            example: "1,2,3"
+      responses:
+        '200':
+          description: List of slots successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Slots'
+        '204':
+          description: No slots found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      summary: Create a new slot
+      description: Creates a new slot and returns the created Slot object.
+      operationId: createSlot
+      tags:
+        - Slots
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Slots'
+      responses:
+        '201':
+          description: Slot successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slots'
+        '400':
+          description: Invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /users/{id}/managedProjects:
+    get:
+      summary: Retrieve a user with their managed projects
+      description: Returns the user and their managed projects
+      operationId: getUserWithManagedProjects
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User with managed projects successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /users/username/{username}:
+    get:
+      summary: Retrieve a user by their username
+      description: Returns the User object corresponding to the provided username.
+      operationId: getUserByUsername
+      tags:
+        - Users
+      parameters:
+        - name: username
+          in: path
+          description: Username of the user.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /slots/{id}:
+    get:
+      summary: Retrieve a slot by its ID
+      description: Returns the Slot object corresponding to the provided ID.
+      operationId: getSlotById
+      tags:
+        - Slots
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the slot.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Slot successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slots'
+        '404':
+          description: Slot not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      summary: Update an existing slot
+      description: Updates the details of an existing slot and returns the updated Slot object.
+      operationId: updateSlot
+      tags:
+        - Slots
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the slot to update.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Slots'
+      responses:
+        '200':
+          description: Slot successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slots'
+        '400':
+          description: Invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Slot not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      summary: Delete a slot by its ID
+      description: Deletes the slot corresponding to the provided ID.
+      operationId: deleteSlot
+      tags:
+        - Slots
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the slot to delete.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Slot successfully deleted.
+        '404':
+          description: Slot not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+components:
+  headers:
+    total-count:
+      description: Total number of items in the response
+      schema:
+        type: integer
+        format: int32
+        examples:
+          - value: 100
+            summary: Total count of vehicles
+    page-size:
+      description: Number of items per page
+      schema:
+        type: integer
+        format: int32
+        examples:
+          - value: 10
+            summary: Default page size for vehicle listings
+    page-number:
+      description: Current page number (from 0)
+      schema:
+        type: integer
+        format: int32
+        examples:
+          - value: 0
+            summary: Current page number in the response
+  parameters:
+    PageNumber:
+      name: pageNumber
+      in: query
+      description: Page number to retrieve.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 0
+        examples:
+          - value: 0
+            summary: Initial page
+    Size:
+      name: size
+      in: query
+      description: Number of items per page.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 10
+        examples:
+          - value: 10
+            summary: Page size
+    Sort:
+      name: sort
+      in: query
+      description: Sorting criteria for results.
+      required: false
+      schema:
+        type: string
+        examples:
+          - value: 'id,asc'
+            summary: Sort by ID in ascending order
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          format: int32
+          description: Current page number.
+        pageSize:
+          type: integer
+          format: int32
+          description: Number of items per page.
+        totalCount:
+          type: integer
+          format: int32
+          description: Total number of available items.
+    PaginationResponse:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Projects'  # Or Tasks, Users, Slots depending on context
+    ProjectsPage:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Projects'
+    TasksPage:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tasks'
+    SlotsPage:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slots'
+    UsersPage:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Users'
+    ApiError:
+      type: object
+      properties:
+        details:
+          type: string
+          description: Detailed description of the error.
+          example: Internal error
+        status:
+          type: integer
+          format: int32
+          example: 500
+        error:
+          type: string
+          example: Internal Server Error
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+          example: 2025-07-02T14:00:00Z
+    Projects:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the project.
+        code:
+          type: string
+          maxLength: 10
+          description: Project identification code.
+        name:
+          type: string
+          description: Project name.
+        description:
+          type: string
+          description: Project description.
+        startDate:
+          type: string
+          format: date
+          description: Project start date.
+          examples:
+            - value: '2025-01-01'
+              summary: Project start date
+        duration:
+          type: integer
+          description: Project duration in days.
+        state:
+          type: string
+          enum: [open, closed, deleted]
+          description: Project state (e.g., open, closed, deleted).
+        manager:
+          type: string
+          description: Project manager name.
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tasks'
+
+    Tasks:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the task.
+        projectId:
+          type: integer
+          format: int64
+          description: ID of the project to which the task belongs.
+        code:
+          type: string
+          maxLength: 10
+          description: Task identification code.
+        name:
+          type: string
+          description: Task name.
+        description:
+          type: string
+          description: Task description.
+        startDate:
+          type: string
+          format: date
+          description: Task start date.
+          examples:
+            - value: '2025-01-01'
+              summary: Task start date
+        duration:
+          type: integer
+          description: Task duration in days.
+        state:
+            type: string
+            enum: [in progress, completed, deleted]
+            description: Task state (e.g., in progress, completed, deleted).
+    Users:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the user.
+        firstName:
+          type: string
+          description: User's first name.
+        lastName:
+          type: string
+          description: User's last name.
+        username:
+          type: string
+          description: Username for access.
+        email:
+          type: string
+          format: email
+          description: User's email address.
+        profile:
+          type: string
+          description: User profile (e.g., administrator, standard user).
+        dailyHours:
+          type: integer
+          description: User's daily working hours.
+        managedProjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Projects'
+    Slots:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the slot.
+        taskId:
+          type: integer
+          format: int64
+          description: ID of the task to which the slot belongs.
+        startDate:
+          type: string
+          format: date
+          description: Slot start date.
+        endDate:
+          type: string
+          format: date
+          description: Slot end date.
+        duration:
+          type: integer
+          description: Slot duration in minutes.
+    ProjectFilter:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of the user associated with the project.
+        projectCodes:
+          type: array
+          items:
+            type: string
+          description: List of project codes to filter.
+    TaskFilter:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: ID of the user associated with the task.
+        ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: List of task IDs to filter.
+    UserFilter:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: List of user IDs to filter.
+        taskId:
+          type: integer
+          format: int64
+          description: ID of the task associated with the user.
+    SlotFilter:
+      type: object
+      properties:
+        taskId:
+          type: integer
+          format: int64
+          description: ID of the task associated with the slot.
+        ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: List of slot IDs to filter.
+    Problem:
+      description: Error occurred - see status code and problem object for more information.
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: |
+            An absolute URI that identifies the problem type. When dereferenced,
+            it SHOULD provide human-readable documentation for the problem type
+            (e.g., using HTML).
+          default: "about:blank"
+          example: "https://zalando.github.io/problem/constraint-violation"
+        title:
+          type: string
+          description: |
+            A short summary of the problem type. Written in English and readable
+            for engineers (usually not suited for non-technical stakeholders and
+            not localized).
+        status:
+          type: integer
+          format: int32
+          description: |
+            The HTTP status code generated by the origin server for this occurrence
+            of the problem.
+          minimum: 100
+          maximum: 600
+          exclusiveMaximum: true
+          example: 503
+        detail:
+          type: string
+          description: |
+            A human readable explanation specific to this occurrence of the
+            problem.
+          example: Connection to database timed out
+        instance:
+          type: string
+          format: uri
+          description: |
+            An absolute URI that identifies the specific occurrence of the problem.
+            It may or may not yield further information if dereferenced.
+        errorCategory:
+          type: string
+          description: The category of the error.
+          example: Invalid
+        fieldName:
+          type: string
+          description: The name of the field that caused the error.
+          example: phone
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp when the error occurred.
+          example: "2024-11-13T10:42:21.263191453Z"
+        traceId:
+          type: string
+          description: The trace ID for the error.
+          example: "057b351ca8e8badf158357ecbb2e"

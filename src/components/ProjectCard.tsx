@@ -9,7 +9,7 @@ export function ProjectCard() {
           <li>Task 1</li>
           <li>Task 2</li>
           <li>Task 3</li>
-          <a>Nuova Task</a>
+          <a >Nuova Task</a>
         </ul>
       </div>
       
