@@ -8,11 +8,16 @@ export function ProjectList() {
 
   useEffect(() => {
     projects
-      .getProjects({
-        pageNumber: 0,
-        size: 10,
-        sort: "id",
-      })
+    .getProjects(
+  {
+    pageNumber: 0,
+    size: 10,
+    sort: "id",
+  },
+  {
+    credentials: "include",
+  }
+)
       .then((res) => setProjectsData(res || []))
       .catch((error) => {
         console.error(error);
