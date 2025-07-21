@@ -10,7 +10,7 @@ function App() {
       <Router>
         <Header />
         <Routes>
-          <Route path="/projects" element={<Projects />} />
+          <Route path="/" element={<Projects />} />
           <Route path="/workload" element={<Workload />} />
         </Routes>
       </Router>
