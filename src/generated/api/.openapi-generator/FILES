@@ -1,4 +1,3 @@
-.openapi-generator-ignore
 apis/ProjectsApi.ts
 apis/SlotsApi.ts
 apis/TasksApi.ts

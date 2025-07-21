@@ -45,6 +45,10 @@ export interface GetProjectsRequest {
     projectCodes?: Array<string>;
 }
 
+export interface GetUserWithManagedProjectsRequest {
+    id: number;
+}
+
 export interface UpdateProjectRequest {
     id: number;
     projects: Projects;
@@ -229,6 +233,45 @@ export class ProjectsApi extends runtime.BaseAPI {
             default:
                 return await response.value();
         }
+    }
+
+    /**
+     * Returns the list of projects managed by the specified user
+     * Retrieve the list of projects managed by a user
+     */
+    async getUserWithManagedProjectsRaw(requestParameters: GetUserWithManagedProjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Projects>>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling getUserWithManagedProjects().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/projects/{id}/managedProjects`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ProjectsFromJSON));
+    }
+
+    /**
+     * Returns the list of projects managed by the specified user
+     * Retrieve the list of projects managed by a user
+     */
+    async getUserWithManagedProjects(requestParameters: GetUserWithManagedProjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Projects>> {
+        const response = await this.getUserWithManagedProjectsRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

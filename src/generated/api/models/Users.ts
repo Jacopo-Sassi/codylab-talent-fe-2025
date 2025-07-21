@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { Tasks } from './Tasks';
+import {
+    TasksFromJSON,
+    TasksFromJSONTyped,
+    TasksToJSON,
+    TasksToJSONTyped,
+} from './Tasks';
 import type { Projects } from './Projects';
 import {
     ProjectsFromJSON,
@@ -75,6 +82,12 @@ export interface Users {
      * @memberof Users
      */
     managedProjects?: Array<Projects>;
+    /**
+     * 
+     * @type {Array<Tasks>}
+     * @memberof Users
+     */
+    tasks?: Array<Tasks>;
 }
 
 /**
@@ -102,6 +115,7 @@ export function UsersFromJSONTyped(json: any, ignoreDiscriminator: boolean): Use
         'profile': json['profile'] == null ? undefined : json['profile'],
         'dailyHours': json['dailyHours'] == null ? undefined : json['dailyHours'],
         'managedProjects': json['managedProjects'] == null ? undefined : ((json['managedProjects'] as Array<any>).map(ProjectsFromJSON)),
+        'tasks': json['tasks'] == null ? undefined : ((json['tasks'] as Array<any>).map(TasksFromJSON)),
     };
 }
 
@@ -124,6 +138,7 @@ export function UsersToJSONTyped(value?: Users | null, ignoreDiscriminator: bool
         'profile': value['profile'],
         'dailyHours': value['dailyHours'],
         'managedProjects': value['managedProjects'] == null ? undefined : ((value['managedProjects'] as Array<any>).map(ProjectsToJSON)),
+        'tasks': value['tasks'] == null ? undefined : ((value['tasks'] as Array<any>).map(TasksToJSON)),
     };
 }
 

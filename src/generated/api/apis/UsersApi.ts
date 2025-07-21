@@ -41,10 +41,6 @@ export interface GetUserByUsernameRequest {
     username: string;
 }
 
-export interface GetUserWithManagedProjectsRequest {
-    id: number;
-}
-
 export interface GetUsersRequest {
     pageNumber?: number;
     size?: number;
@@ -217,45 +213,6 @@ export class UsersApi extends runtime.BaseAPI {
      */
     async getUserByUsername(requestParameters: GetUserByUsernameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Users> {
         const response = await this.getUserByUsernameRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Returns the user and their managed projects
-     * Retrieve a user with their managed projects
-     */
-    async getUserWithManagedProjectsRaw(requestParameters: GetUserWithManagedProjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Users>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling getUserWithManagedProjects().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-
-        let urlPath = `/users/{id}/managedProjects`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => UsersFromJSON(jsonValue));
-    }
-
-    /**
-     * Returns the user and their managed projects
-     * Retrieve a user with their managed projects
-     */
-    async getUserWithManagedProjects(requestParameters: GetUserWithManagedProjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Users> {
-        const response = await this.getUserWithManagedProjectsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

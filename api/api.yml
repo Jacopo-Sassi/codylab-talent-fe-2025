@@ -605,13 +605,13 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ApiError'
-  /users/{id}/managedProjects:
+  /projects/{id}/managedProjects:
     get:
-      summary: Retrieve a user with their managed projects
-      description: Returns the user and their managed projects
+      summary: Retrieve the list of projects managed by a user
+      description: Returns the list of projects managed by the specified user
       operationId: getUserWithManagedProjects
       tags:
-        - Users
+        - Projects
       parameters:
         - name: id
           in: path
@@ -622,11 +622,13 @@ paths:
             format: int64
       responses:
         '200':
-          description: User with managed projects successfully retrieved
+          description: List of projects managed by the user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Users'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Projects'
         '404':
           description: User not found
         '500':
@@ -931,7 +933,7 @@ components:
           description: Project duration in days.
         state:
           type: string
-          enum: [open, closed, deleted]
+          enum: [ open, closed, deleted ]
           description: Project state (e.g., open, closed, deleted).
         manager:
           type: string
@@ -973,9 +975,9 @@ components:
           type: integer
           description: Task duration in days.
         state:
-            type: string
-            enum: [in progress, completed, deleted]
-            description: Task state (e.g., in progress, completed, deleted).
+          type: string
+          enum: [ in progress, completed, deleted ]
+          description: Task state (e.g., in progress, completed, deleted).
     Users:
       type: object
       properties:
@@ -1006,6 +1008,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Projects'
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tasks'
     Slots:
       type: object
       properties:
