@@ -12,7 +12,11 @@ export function UserList() {
         pageNumber: 0,
         size: 10,
         sort: "id",
-      })
+      },
+    {
+    credentials: "include",
+    })
+      
       .then((res) => setUsersData(res || []))
       .catch((error) => {
         console.error(error);
