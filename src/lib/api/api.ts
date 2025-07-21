@@ -22,5 +22,9 @@ export const tasks = new TasksApi(new Configuration({
 }));
 
 export const users = new UsersApi(new Configuration({
-    basePath: BASE_PATH
+    basePath: BASE_PATH,
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": "basic:dXNlcjpwYXNzd29yZA=="
+    }
 }));
