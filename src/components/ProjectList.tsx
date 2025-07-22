@@ -15,9 +15,6 @@ export function ProjectList() {
     pageNumber: 0,
     size: 10,
     sort: "id",
-  },
-  {
-    credentials: "include",
   }
 )
       .then((res) => setProjectsData(res || []))

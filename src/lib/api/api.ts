@@ -5,26 +5,20 @@ const BASE_PATH = "http://localhost:8090/api/v1";
 
 export const projects = new ProjectsApi(new Configuration({
     basePath: BASE_PATH,
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": "basic:dXNlcjpwYXNzd29yZA=="
-
-    }
-
+    credentials: "include",
 }));
 
 export const slots = new SlotsApi(new Configuration({
-    basePath: BASE_PATH
+    basePath: BASE_PATH,
+    credentials: "include",
 }));
 
 export const tasks = new TasksApi(new Configuration({
-    basePath: BASE_PATH
+    basePath: BASE_PATH,
+    credentials: "include",
 }));
 
 export const users = new UsersApi(new Configuration({
     basePath: BASE_PATH,
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": "basic:dXNlcjpwYXNzd29yZA=="
-    }
+    credentials: "include"
 }));

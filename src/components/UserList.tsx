@@ -13,9 +13,7 @@ export function UserList() {
         size: 10,
         sort: "id",
       },
-    {
-    credentials: "include",
-    })
+    )
       
       .then((res) => setUsersData(res || []))
       .catch((error) => {

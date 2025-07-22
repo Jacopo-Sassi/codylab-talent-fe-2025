@@ -3,7 +3,7 @@ import { Header } from "./components/Header";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Workload } from './pages/Workload';
 import { Projects } from './pages/Projects';
-import { useAuth } from "./assets/hooks/Auth";
+import { useAuth } from "./assets/hooks/useAuth";
 import { ProjectForm } from "./components/ProjectForm";
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Projects />} />
           <Route path="/workload" element={<Workload />} />
-          <Route path="/add-project" element={<ProjectForm />} />
+          <Route path="/projects/add" element={<ProjectForm />} />
         </Routes>
       </Router>
     </div>

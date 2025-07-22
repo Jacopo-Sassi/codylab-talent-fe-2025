@@ -6,7 +6,7 @@ export function Actions() {
     <div className={classes.actions}>
       <ul>
         <li>
-          <Link to="/add-project" className={classes.link}>Nuovo progetto</Link>
+          <Link to="/projects/add" className={classes.link}>Nuovo progetto</Link>
         </li>
       </ul>
     </div>
