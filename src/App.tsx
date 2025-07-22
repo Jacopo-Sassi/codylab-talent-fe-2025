@@ -20,6 +20,8 @@ function App() {
           <Route path="/" element={<Projects />} />
           <Route path="/workload" element={<Workload />} />
           <Route path="/projects/add" element={<ProjectForm />} />
+          <Route path="/project/:id/edit" element={<ProjectForm />} />
+          <Route path="/task/:id/edit" element={<ProjectForm />} />
         </Routes>
       </Router>
     </div>

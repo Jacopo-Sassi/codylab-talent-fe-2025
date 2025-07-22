@@ -12,7 +12,7 @@
   z-index: 1000;
 }
 
-.task_name {
+.prj_name {
     display: flex;
     flex-direction: row;
     align-items: center;

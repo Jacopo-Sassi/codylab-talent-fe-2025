@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Tasks } from "../generated/api/models/Tasks";
 import classes from "./TaskInfo.module.css";
 
@@ -8,7 +9,10 @@ export function TaskInfo({task, onClose}: {task: Tasks; onClose: () => void;}) {
       <button className={classes.closeButton} onClick={onClose}>
         ×
       </button>
-      <h3>{task.name}</h3>
+      <div className={classes.task_name}>
+        <h3>{task.name}</h3>
+        <Link to={`/task/${task.id}/edit`}> <span className="material-symbols-outlined">edit</span> </Link>
+      </div>
       <p>
         <strong>ID:</strong> {task.id}
       </p>
