@@ -8,7 +8,7 @@ export function UserCard({ user }: { user: Users }) {
       <div className={classes.tasks}>
         {user.tasks?.map((task) => (
           <div key={task.id}>
-            <h4>{task.projectName}</h4>
+            <h4>{task.projectId}</h4>
             <ul>
               <li>{task.name}</li>
             </ul>
