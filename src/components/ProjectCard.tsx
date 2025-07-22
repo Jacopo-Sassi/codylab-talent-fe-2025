@@ -1,8 +1,23 @@
 import type { Projects } from "../generated/api/models/Projects";
 import type { Tasks } from "../generated/api/models/Tasks";
 import classes from "./ProjectCard.module.css";
+import { useNavigate } from "react-router-dom";
 
-export function ProjectCard({project,onTaskClick,}: {project: Projects;onTaskClick: (task: Tasks) => void;}) {
+export function ProjectCard({
+  project,
+  onTaskClick,
+}: {
+  project: Projects;
+  onTaskClick: (task: Tasks) => void;
+}) {
+  const navigate = useNavigate();
+
+  const handleNewTaskClick = () => {
+    navigate("/tasks/add", {
+      state: { projectId: project.id },
+    });
+  };
+
   return (
     <section className={classes.project}>
       <h2>{project.name}</h2>
@@ -14,9 +29,9 @@ export function ProjectCard({project,onTaskClick,}: {project: Projects;onTaskCli
             </li>
           ))}
         </ul>
-        <li className={classes.newTask}>
-          <a href="#">Nuova Task</a>
-        </li>
+          <li className={classes.newTask}>
+            <p onClick={handleNewTaskClick}>Nuova Task</p>
+          </li>
       </div>
     </section>
   );
