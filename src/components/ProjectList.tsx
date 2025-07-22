@@ -1,10 +1,10 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import type { Projects, Tasks } from "../generated/api";
 import { projects } from "../lib/api/api";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectInfo } from "./ProjectInfo";
 import { TaskInfo } from "./TaskInfo";
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function ProjectList() {
   const [projectsData, setProjectsData] = useState<Projects[]>([]);
@@ -12,28 +12,22 @@ export function ProjectList() {
   const [selectedProject, setSelectedProject] = useState<Projects | null>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const taskId = searchParams.get('task');
+  const taskId = searchParams.get("task");
 
   // Carica i progetti
   useEffect(() => {
     projects
-    .getProjects(
-  {
-    pageNumber: 0,
-    size: 10,
-    sort: "id",
-  }
-)
+      .getProjects({
+        pageNumber: 0,
+        size: 10,
+        sort: "id",
+      })
       .then((res) => setProjectsData(res || []))
       .catch((error) => {
         console.error(error);
       });
   }, []);
 
-  const handleProjectClick = (project: Projects) => {
-    setSelectedProject(project);
-    setSelectedTask(null);
-  };
 
   // Sincronizza il task selezionato con l'URL
   useEffect(() => {
@@ -41,7 +35,7 @@ export function ProjectList() {
       // Cerca il task tra i progetti caricati
       const findTask = () => {
         for (const project of projectsData) {
-          const task = project.tasks?.find(t => t.id.toString() === taskId);
+          const task = project.tasks?.find((t) => t.id.toString() === taskId);
           if (task) {
             setSelectedTask(task);
             break;
@@ -54,6 +48,12 @@ export function ProjectList() {
     }
   }, [taskId, projectsData]);
 
+  const handleProjectClick = (project: Projects) => {
+    setSelectedProject(project);
+    setSelectedTask(null);
+    navigate("", { replace: true });
+  };
+
   const handleTaskClick = (task: Tasks) => {
     setSelectedTask(task);
     setSelectedProject(null);
@@ -62,7 +62,7 @@ export function ProjectList() {
 
   const handleCloseTask = () => {
     setSelectedTask(null);
-    navigate('', { replace: true });
+    navigate("", { replace: true });
   };
 
   return (
@@ -80,7 +80,10 @@ export function ProjectList() {
         <TaskInfo task={selectedTask} onClose={handleCloseTask} />
       )}
       {selectedProject && (
-        <ProjectInfo project={selectedProject} onClose={() => setSelectedProject(null)} />
+        <ProjectInfo
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
       )}
     </>
   );
