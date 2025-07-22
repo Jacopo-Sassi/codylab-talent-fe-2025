@@ -6,7 +6,6 @@ import { Projects } from './pages/Projects';
 import { useAuth } from "./assets/hooks/useAuth";
 import { ProjectForm } from "./components/ProjectForm";
 import { TaskForm } from "./components/TaskForm";
-import type { Tasks } from "./generated/api";
 
 function App() {
    const { loading } = useAuth();
@@ -23,9 +22,7 @@ function App() {
         
           <Route path="/workload" element={<Workload />} />
           <Route path="/projects/add" element={<ProjectForm />} />
-          <Route path="/tasks/add" element={<TaskForm onSubmit={function (task: Tasks): void {
-            throw new Error("Function not implemented.");
-          } } />} />
+          <Route path="/tasks/add" element={<TaskForm/>} />
           <Route path="/project/:id/edit" element={<ProjectForm />} />
           <Route path="/task/:id/edit" element={<ProjectForm />} />
         </Routes>
