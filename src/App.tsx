@@ -18,6 +18,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Projects />} />
+        
           <Route path="/workload" element={<Workload />} />
           <Route path="/projects/add" element={<ProjectForm />} />
         </Routes>
