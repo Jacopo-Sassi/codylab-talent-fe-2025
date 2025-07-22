@@ -26,11 +26,11 @@ export interface Tasks {
      */
     id?: number;
     /**
-     * ID of the project to which the task belongs.
-     * @type {number}
+     * Name of the project to which the task belongs.
+     * @type {string}
      * @memberof Tasks
      */
-    projectId?: number;
+    projectName?: string;
     /**
      * Task identification code.
      * @type {string}
@@ -99,7 +99,7 @@ export function TasksFromJSONTyped(json: any, ignoreDiscriminator: boolean): Tas
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'projectId': json['projectId'] == null ? undefined : json['projectId'],
+        'projectName': json['projectName'] == null ? undefined : json['projectName'],
         'code': json['code'] == null ? undefined : json['code'],
         'name': json['name'] == null ? undefined : json['name'],
         'description': json['description'] == null ? undefined : json['description'],
@@ -121,7 +121,7 @@ export function TasksToJSONTyped(value?: Tasks | null, ignoreDiscriminator: bool
     return {
         
         'id': value['id'],
-        'projectId': value['projectId'],
+        'projectName': value['projectName'],
         'code': value['code'],
         'name': value['name'],
         'description': value['description'],

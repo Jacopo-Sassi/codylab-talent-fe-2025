@@ -950,10 +950,9 @@ components:
           type: integer
           format: int64
           description: Unique identifier of the task.
-        projectId:
-          type: integer
-          format: int64
-          description: ID of the project to which the task belongs.
+        projectName:
+          type: string
+          description: Name of the project to which the task belongs.
         code:
           type: string
           maxLength: 10
