@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import classes from "./ProjectForm.module.css";
-import { ProjectsStateEnum, type Projects } from "../generated/api";
+import { ProjectsStateEnum } from "../generated/api";
 import { projects } from "../lib/api/api";
 
 export function ProjectForm() {

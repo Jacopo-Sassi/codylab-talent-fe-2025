@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import classes from "./TaskForm.module.css";
-import { TasksApi } from "../generated/api/apis/TasksApi";
+import { tasks } from "../lib/api/api";
 import { TasksStateEnum } from "../generated/api";
-
-const tasksApi = new TasksApi();
 
 export function TaskForm() {
   const navigate = useNavigate();
@@ -40,7 +38,7 @@ export function TaskForm() {
     }
 
     try {
-      await tasksApi.createTask(
+      await tasks.createTask(
         {
           tasks: {
             ...formData,
