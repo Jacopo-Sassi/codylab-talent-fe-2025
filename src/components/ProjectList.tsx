@@ -6,7 +6,11 @@ import { ProjectCard } from "./ProjectCard";
 import { ProjectInfo } from "./ProjectInfo";
 import { TaskInfo } from "./TaskInfo";
 
-export function ProjectList() {
+type ProjectListProps = {
+  searchTerm: string;
+};
+
+export function ProjectList({ searchTerm }: ProjectListProps) {
   const [projectsData, setProjectsData] = useState<Projects[]>([]);
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null);
   const [selectedProject, setSelectedProject] = useState<Projects | null>(null);
@@ -29,10 +33,8 @@ export function ProjectList() {
   }, []);
 
 
-  // Sincronizza il task selezionato con l'URL
   useEffect(() => {
     if (taskId) {
-      // Cerca il task tra i progetti caricati
       const findTask = () => {
         for (const project of projectsData) {
           const task = project.tasks?.find((t) => t.id.toString() === taskId);
@@ -67,14 +69,19 @@ export function ProjectList() {
 
   return (
     <>
-      {projectsData.map((project) => (
-        <ProjectCard
-          key={project.id}
-          project={project}
-          onTaskClick={handleTaskClick} // Usa la nuova funzione
-          onProjectClick={handleProjectClick}
-        />
-      ))}
+{projectsData
+  .filter((project) =>
+    (searchTerm === "" || project.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+  )
+  .map((project) => (
+    <ProjectCard
+      key={project.id}
+      project={project}
+      onTaskClick={handleTaskClick}
+      onProjectClick={handleProjectClick}
+    />
+  ))}
+
 
       {selectedTask && (
         <TaskInfo task={selectedTask} onClose={handleCloseTask} />
