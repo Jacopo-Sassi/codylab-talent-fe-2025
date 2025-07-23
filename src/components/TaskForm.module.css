@@ -1,11 +1,11 @@
 .task_form {
   max-width: 600px;
   margin: 2rem auto;
-  background-color: #fff;
+  background-color: #ffffff;
   padding: 2rem;
-  border: 2px solid #d0d6dd;
-  border-radius: 12px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e4e8;
 }
 
 .task_form form {
@@ -15,54 +15,42 @@
 }
 
 .task_form label {
-  font-size: 1rem;
+  font-weight: 600;
   color: #333;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+  margin-bottom: 0.2rem;
 }
 
-.task_form input[type="text"],
-.task_form input[type="number"],
-.task_form input[type="date"],
-.task_form select,
-.task_form textarea {
-  padding: 0.6rem;
-  border: 2px solid #a8b0ba;
+.task_form input,
+.task_form select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  color: #333;
   border-radius: 8px;
   font-size: 1rem;
-  font-family: inherit;
+  transition: all 0.2s ease-in-out;
+}
+
+.task_form input:focus,
+.task_form select:focus {
   outline: none;
-  transition: border-color 0.2s;
-  background-color: #fdfdfd;
+  border-color: #007bff;
+  background-color: #fff;
 }
 
-.task_form input[type="text"]:focus,
-.task_form input[type="number"]:focus,
-.task_form input[type="date"]:focus,
-.task_form select:focus,
-.task_form textarea:focus {
-  border-color: #718ea8;
-  background-color: #f9f9f9;
-}
-
-.task_form textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.task_form button[type="submit"] {
-  width: fit-content;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  border-radius: 10px;
-  border: none;
-  background-color: #718ea8;
+.addBtn {
+  padding: 0.5rem 1.5rem;
+  background-color: #4a90e2;
   color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease-in-out;
+  align-self: flex-start;
 }
 
-.task_form button[type="submit"]:hover {
-  background-color: #5c748f;
+.addBtn:hover {
+  background-color: #007bff;
 }

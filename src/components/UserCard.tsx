@@ -14,9 +14,7 @@ export function UserCard({ user }: { user: Users }) {
             </ul>
           </div>
         ))}
-        <li className={classes.newTask}>
-          <a href="#">Nuova Task</a>
-        </li>
+        <p className={classes.newTask}>Nuova Task</p>
       </div>
     </section>
   );

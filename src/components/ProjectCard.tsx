@@ -29,9 +29,7 @@ export function ProjectCard({
             </li>
           ))}
         </ul>
-          <li className={classes.newTask}>
-            <p onClick={handleNewTaskClick}>Nuova Task</p>
-          </li>
+          <p className={classes.newTask} onClick={handleNewTaskClick}>Nuova Task</p>
       </div>
     </section>
   );

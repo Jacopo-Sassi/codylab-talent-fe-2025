@@ -3,7 +3,6 @@
   border-radius: 8px;
   padding: 16px;
   background-color: #f9f9f9;
-
   h2 {
     margin: 0 0 8px;
     font-size: 1.3em;
@@ -16,20 +15,28 @@
     list-style: none;
     padding: 0;
     margin: 0;
-
     li {
       margin: 8px 0;
       padding: 8px;
       border-bottom: 1px solid #ddd;
       border-radius: 4px;
-      /* background-color: #fff; */
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      &:hover {
+        background-color: #ececec;
+      }
     }
   }
 }
 
 .newTask {
+  width: fit-content;
   text-decoration: none;
-  color: #0077cc;
+  color: #4a90e2;
   list-style: none;
-  padding: 8px;
+  cursor: pointer;
+}
+
+.newTask:hover{
+  color: #007bff;
 }

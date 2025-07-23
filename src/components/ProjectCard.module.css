@@ -34,8 +34,13 @@
 }
 
 .newTask {
+  width:fit-content;
   text-decoration: none;
-  color: #0077cc;
+  color: #4a90e2;
   list-style: none;
-  padding: 8px;
+  cursor: pointer;
+}
+
+.newTask:hover{
+  color: #007bff;
 }

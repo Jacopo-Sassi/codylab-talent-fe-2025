@@ -2,12 +2,25 @@
   display: flex;
   align-items: center;
   flex-grow: 2;
-  input {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    background-color: #ffffff;
-    color: #000000;
-    border-radius: 4px;
-  }
+}
+
+.search input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  color: #333;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.search input::placeholder {
+  color: #888;
+}
+
+.search input:focus {
+  outline: none;
+  border-color: #007bff;
+  background-color: #fff;
 }
