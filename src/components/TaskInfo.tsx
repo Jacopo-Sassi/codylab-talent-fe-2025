@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ProjectsDataContext } from "./ProjectList";
 import classes from "./TaskInfo.module.css";
+import { ProjectsDataContext } from "../pages/ProjectsContext";
 
 export function TaskInfo() {
   const navigate = useNavigate();

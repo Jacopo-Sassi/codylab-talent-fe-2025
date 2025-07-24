@@ -11,6 +11,7 @@
     "api:generate": "openapi-generator-cli generate -g typescript-fetch -i ./api/api.yml -o ./src/generated/api"
   },
   "dependencies": {
+    "dayjs": "^1.11.13",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.0"
