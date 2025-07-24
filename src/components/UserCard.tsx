@@ -4,7 +4,7 @@ import classes from "./UserCard.module.css";
 export function UserCard({ user }: { user: Users }) {
   return (
     <section className={classes.user}>
-      <h2>{user.firstName}</h2>
+      <h2>{user.firstName} {user.lastName}</h2>
       <div className={classes.tasks}>
         {user.tasks?.map((task) => (
           <div key={task.id}>
