@@ -1,9 +1,14 @@
 import { UserList } from "../components/UserList";
 import classes from "./Workload.module.css";
-export function Workload() {
+
+type WorkloadProps = {
+  searchTerm: string;
+};
+
+export function Workload({ searchTerm }: WorkloadProps) {
   return (
-      <main className={classes.main}>
-       <UserList />
-      </main>
+    <main className={classes.main}>
+      <UserList searchTerm={searchTerm} />
+    </main>
   );
 }

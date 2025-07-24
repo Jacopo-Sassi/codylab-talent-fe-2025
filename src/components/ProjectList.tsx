@@ -18,7 +18,6 @@ export function ProjectList({ searchTerm }: ProjectListProps) {
   const [searchParams] = useSearchParams();
   const taskId = searchParams.get("task");
 
-  // Carica i progetti
   useEffect(() => {
     projects
       .getProjects({

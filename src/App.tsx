@@ -20,11 +20,12 @@ function App() {
         <Header searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         <Routes>
           <Route path="/" element={<Projects searchTerm={searchTerm} />} />
-          <Route path="/workload" element={<Workload />} />
+          <Route path="/workload" element={<Workload searchTerm={searchTerm} />} />
           <Route path="/projects/add" element={<ProjectForm />} />
           <Route path="/tasks/add" element={<TaskForm />} />
           <Route path="/project/:id/edit" element={<ProjectForm />} />
           <Route path="/task/:id/edit" element={<TaskForm />} />
+
         </Routes>
       </Router>
     </div>
