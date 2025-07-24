@@ -3,6 +3,10 @@
   border-radius: 8px;
   padding: 16px;
   background-color: #f9f9f9;
+  &.active{
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+  }
   h2 {
     margin: 0 0 8px;
     font-size: 1.3em;
@@ -26,7 +30,7 @@
       border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.2s ease;
-      &:hover {
+      &:hover, &.active {
         background-color: #ececec;
       }
     }

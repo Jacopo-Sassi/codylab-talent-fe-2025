@@ -1,23 +1,18 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { createContext, useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import type { Projects, Tasks } from "../generated/api";
 import { projects } from "../lib/api/api";
 import { ProjectCard } from "./ProjectCard";
-import { ProjectInfo } from "./ProjectInfo";
-import { TaskInfo } from "./TaskInfo";
 
 type ProjectListProps = {
   searchTerm: string;
 };
 
+export const ProjectsDataContext = createContext<Projects[]>([]);
+
 export function ProjectList({ searchTerm }: ProjectListProps) {
   const [projectsData, setProjectsData] = useState<Projects[]>([]);
-  const [selectedTask, setSelectedTask] = useState<Tasks | null>(null);
-  const [selectedProject, setSelectedProject] = useState<Projects | null>(null);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const taskId = searchParams.get("task");
-  const projectId = searchParams.get("project");
 
   useEffect(() => {
     projects
@@ -32,44 +27,17 @@ export function ProjectList({ searchTerm }: ProjectListProps) {
       });
   }, []);
 
-  useEffect(() => {
-    if (taskId) {
-      const task = projectsData
-        .flatMap(project => project.tasks || [])
-        .find(t => t.id.toString() === taskId);
-      setSelectedTask(task || null);
-    } else {
-      setSelectedTask(null);
-    }
-  }, [taskId, projectsData]);
-
-  useEffect(() => {
-    if (projectId) {
-      const project = projectsData.find(p => p.id.toString() === projectId);
-      setSelectedProject(project || null);
-    } else {
-      setSelectedProject(null);
-    }
-  }, [projectId, projectsData]);
 
   const handleProjectClick = (project: Projects) => {
-    navigate(`?project=${project.id}`, { replace: true });
+    navigate(`/projects/${project.id}`, { replace: true });
   };
 
   const handleTaskClick = (task: Tasks) => {
-    navigate(`?task=${task.id}`, { replace: true });
-  };
-
-  const handleCloseTask = () => {
-    navigate("", { replace: true });
-  };
-
-  const handleCloseProject = () => {
-    navigate("", { replace: true });
+    navigate(`/tasks/${task.id}`, { replace: true });
   };
 
   return (
-    <>
+    <ProjectsDataContext.Provider value={projectsData}>
       {projectsData
         .filter(project =>
           searchTerm === "" ||
@@ -84,15 +52,8 @@ export function ProjectList({ searchTerm }: ProjectListProps) {
           />
         ))}
 
-      {selectedTask && (
-        <TaskInfo task={selectedTask} onClose={handleCloseTask} />
-      )}
-      {selectedProject && (
-        <ProjectInfo
-          project={selectedProject}
-          onClose={handleCloseProject}
-        />
-      )}
-    </>
+      <Outlet />
+
+    </ProjectsDataContext.Provider>
   );
 }

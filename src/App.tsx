@@ -7,10 +7,12 @@ import { Projects } from "./pages/Projects";
 import { useAuth } from "./assets/hooks/useAuth";
 import { ProjectForm } from "./components/ProjectForm";
 import { TaskForm } from "./components/TaskForm";
+import { TaskInfo } from "./components/TaskInfo";
+import { ProjectInfo } from "./components/ProjectInfo";
 
 function App() {
   const { loading } = useAuth();
-  const [searchTerm, setSearchTerm] = useState(""); // stato per la ricerca
+  const [searchTerm, setSearchTerm] = useState("");
 
   if (loading) return <div>Loading...</div>;
 
@@ -19,7 +21,10 @@ function App() {
       <Router>
         <Header searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         <Routes>
-          <Route path="/" element={<Projects searchTerm={searchTerm} />} />
+          <Route path="/" element={<Projects searchTerm={searchTerm} />} >
+            <Route path="projects/:projectId" element={<ProjectInfo />}/>
+            <Route path="tasks/:taskId" element={<TaskInfo />}/>
+          </Route>
           <Route path="/workload" element={<Workload searchTerm={searchTerm} />} />
           <Route path="/projects/add" element={<ProjectForm />} />
           <Route path="/tasks/add" element={<TaskForm />} />

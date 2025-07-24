@@ -1,9 +1,29 @@
-import { Link } from "react-router-dom";
-import type { Tasks } from "../generated/api/models/Tasks";
+import { useContext } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ProjectsDataContext } from "./ProjectList";
 import classes from "./TaskInfo.module.css";
 
+export function TaskInfo() {
+  const navigate = useNavigate();
+  const projectsData = useContext(ProjectsDataContext);
+  const { taskId } = useParams();
 
-export function TaskInfo({task, onClose}: {task: Tasks; onClose: () => void;}) {
+  const task = projectsData
+    .flatMap((project) => project.tasks || [])
+    .find((t) => t.id?.toString() === taskId);
+
+  const onClose = () => {
+    navigate("/");
+  };
+
+  if(!task){
+    return(
+      <div>
+        Task non trovato!
+      </div>
+    )
+  }
+
   return (
     <div className={classes.sidebar}>
       <button className={classes.closeButton} onClick={onClose}>
@@ -11,7 +31,10 @@ export function TaskInfo({task, onClose}: {task: Tasks; onClose: () => void;}) {
       </button>
       <div className={classes.task_name}>
         <h3>{task.name}</h3>
-        <Link to={`/task/${task.id}/edit`}> <span className="material-symbols-outlined">edit</span> </Link>
+        <Link to={`/task/${task.id}/edit`}>
+          {" "}
+          <span className="material-symbols-outlined">edit</span>{" "}
+        </Link>
       </div>
       <p>
         <strong>ID:</strong> {task.id}

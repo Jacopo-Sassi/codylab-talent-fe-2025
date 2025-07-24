@@ -1,8 +1,26 @@
-import { Link } from "react-router-dom";
-import type { Projects } from "../generated/api/models/Projects";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import classes from "./ProjectInfo.module.css"
+import { useContext } from "react";
+import { ProjectsDataContext } from "./ProjectList";
 
-export function ProjectInfo({project, onClose}: {project: Projects; onClose: () => void;}) {
+export function ProjectInfo() {
+  const navigate = useNavigate();
+  const projectsData = useContext(ProjectsDataContext);
+  const {projectId} = useParams();
+
+  const project = projectsData.find(p => p.id?.toString() === projectId);
+
+  const onClose = () => {
+    navigate("/");
+  };
+
+  if(!project){
+    return(
+      <div>
+        Progetto non trovato!
+      </div>
+    )
+  }
   return (
     <div className={classes.sidebar}>
       <button className={classes.closeButton} onClick={onClose}>
