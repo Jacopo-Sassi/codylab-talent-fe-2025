@@ -17,6 +17,7 @@ export function ProjectList({ searchTerm }: ProjectListProps) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const taskId = searchParams.get("task");
+  const projectId = searchParams.get("project");
 
   useEffect(() => {
     projects
@@ -31,56 +32,57 @@ export function ProjectList({ searchTerm }: ProjectListProps) {
       });
   }, []);
 
-
   useEffect(() => {
     if (taskId) {
-      const findTask = () => {
-        for (const project of projectsData) {
-          const task = project.tasks?.find((t) => t.id.toString() === taskId);
-          if (task) {
-            setSelectedTask(task);
-            break;
-          }
-        }
-      };
-      findTask();
+      const task = projectsData
+        .flatMap(project => project.tasks || [])
+        .find(t => t.id.toString() === taskId);
+      setSelectedTask(task || null);
     } else {
       setSelectedTask(null);
     }
   }, [taskId, projectsData]);
 
+  useEffect(() => {
+    if (projectId) {
+      const project = projectsData.find(p => p.id.toString() === projectId);
+      setSelectedProject(project || null);
+    } else {
+      setSelectedProject(null);
+    }
+  }, [projectId, projectsData]);
+
   const handleProjectClick = (project: Projects) => {
-    setSelectedProject(project);
-    setSelectedTask(null);
-    navigate("", { replace: true });
+    navigate(`?project=${project.id}`, { replace: true });
   };
 
   const handleTaskClick = (task: Tasks) => {
-    setSelectedTask(task);
-    setSelectedProject(null);
-    navigate(`?task/${task.id}`, { replace: true });
+    navigate(`?task=${task.id}`, { replace: true });
   };
 
   const handleCloseTask = () => {
-    setSelectedTask(null);
+    navigate("", { replace: true });
+  };
+
+  const handleCloseProject = () => {
     navigate("", { replace: true });
   };
 
   return (
     <>
-{projectsData
-  .filter((project) =>
-    (searchTerm === "" || project.name?.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
-  .map((project) => (
-    <ProjectCard
-      key={project.id}
-      project={project}
-      onTaskClick={handleTaskClick}
-      onProjectClick={handleProjectClick}
-    />
-  ))}
-
+      {projectsData
+        .filter(project =>
+          searchTerm === "" ||
+          project.name?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map(project => (
+          <ProjectCard
+            key={project.id}
+            project={project}
+            onTaskClick={handleTaskClick}
+            onProjectClick={handleProjectClick}
+          />
+        ))}
 
       {selectedTask && (
         <TaskInfo task={selectedTask} onClose={handleCloseTask} />
@@ -88,7 +90,7 @@ export function ProjectList({ searchTerm }: ProjectListProps) {
       {selectedProject && (
         <ProjectInfo
           project={selectedProject}
-          onClose={() => setSelectedProject(null)}
+          onClose={handleCloseProject}
         />
       )}
     </>
