@@ -2,17 +2,17 @@ import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TasksStateEnum, type Tasks } from "../generated/api";
 import { tasks } from "../lib/api/api";
-import classes from "./TaskForm.module.css";
 import { ProjectsDataContext } from "../pages/ProjectsContext";
+import classes from "./TaskForm.module.css";
 
 export function TaskForm() {
   const navigate = useNavigate();
-  const { id: taskId } = useParams();
+  const { id: taskId, projectId } = useParams();
   const projectsData = useContext(ProjectsDataContext);
   const currentTask = projectsData
     .flatMap((project) => project.tasks || [])
     .find((t) => t.id?.toString() === taskId);
-    
+
   const today = new Date().toISOString().slice(0, 10);
 
   const emptyState = {
@@ -22,7 +22,7 @@ export function TaskForm() {
     startDate: today,
     duration: 0,
     state: TasksStateEnum.InProgress,
-  }
+  };
 
   const [formData, setFormData] = useState(currentTask || emptyState);
 
@@ -41,19 +41,23 @@ export function TaskForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!currentTask?.projectId) {
+    const finalProjectId = currentTask?.projectId || projectId;
+    if (!finalProjectId) {
       alert("Project ID mancante!");
       return;
     }
 
-    const save = currentTask ? ({tasks}) => tasks.updateTask(currentTask.id, tasks) : tasks.createTask;
+    const save = currentTask
+      ? (task: { tasks: Tasks }) =>
+          tasks.updateTask({ id: currentTask.id!, tasks: task.tasks })
+      : (task: { tasks: Tasks }) => tasks.createTask(task);
 
     try {
       await save({
         tasks: {
           ...formData,
           startDate: new Date(formData.startDate?.toString() || ""),
-          projectId: currentTask?.projectId,
+          projectId: typeof finalProjectId === "string" ? Number(finalProjectId) : finalProjectId,
         },
       });
       alert("Task creato!");

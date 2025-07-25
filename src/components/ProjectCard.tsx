@@ -14,7 +14,7 @@ export function ProjectCard({
   const {projectId, taskId} = useParams();
 
   const handleNewTaskClick = () => {
-    navigate("/tasks/add", {
+    navigate(`/projects/${project.id}/tasks/add`, {
       state: { projectId: project.id },
     });
   };
