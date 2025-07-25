@@ -1,0 +1,65 @@
+.sidebar {
+  position: fixed;
+  top: 2vh;
+  right: 1vw;
+  width: 20rem;
+  height: 90vh;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.user_fistName {
+    display: flex;
+    gap: 1vw;
+    align-items: center;
+}
+
+.user_fistName h3 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: #333;
+}
+
+.user_fistName a {
+  text-decoration: none;
+  color: #555;
+  font-size: 1.4rem;
+  transition: color 0.2s ease;
+}
+
+.user_fistName a:hover {
+  color: #007bff;
+}
+
+p {
+  margin: 0.75rem 0;
+  line-height: 1.4;
+  color: #444;
+}
+
+strong {
+  color: #222;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.closeButton:hover {
+  color: #e53935;
+  transform: scale(1.2);
+}
+
