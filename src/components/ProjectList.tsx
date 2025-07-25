@@ -10,7 +10,7 @@ type ProjectListProps = {
 
 export function ProjectList({ searchTerm }: ProjectListProps) {
   const navigate = useNavigate();
-  const projectsData = useContext(ProjectsDataContext);
+  const { projectsData } = useContext(ProjectsDataContext);
 
   const handleProjectClick = (project: Projects) => {
     navigate(`/projects/${project.id}`, { replace: true });
@@ -40,4 +40,3 @@ export function ProjectList({ searchTerm }: ProjectListProps) {
     </>
   );
 }
-

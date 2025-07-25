@@ -8,7 +8,10 @@ import classes from "./TaskForm.module.css";
 export function TaskForm() {
   const navigate = useNavigate();
   const { id: taskId, projectId } = useParams();
-  const projectsData = useContext(ProjectsDataContext);
+
+  // Ora destrutturi anche refreshProjects dal contesto
+  const { projectsData, refreshProjects } = useContext(ProjectsDataContext);
+
   const currentTask = projectsData
     .flatMap((project) => project.tasks || [])
     .find((t) => t.id?.toString() === taskId);
@@ -26,6 +29,11 @@ export function TaskForm() {
 
   const [formData, setFormData] = useState(currentTask || emptyState);
 
+  // Debug: mostra i parametri URL
+  console.log("URL params:", { taskId, projectId });
+  console.log("Current task:", currentTask);
+  console.log("Form data:", formData);
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -42,27 +50,46 @@ export function TaskForm() {
     e.preventDefault();
 
     const finalProjectId = currentTask?.projectId || projectId;
+    console.log("Final project ID:", finalProjectId);
+
     if (!finalProjectId) {
       alert("Project ID mancante!");
       return;
     }
 
     const save = currentTask
-      ? (task: { tasks: Tasks }) =>
-          tasks.updateTask({ id: currentTask.id!, tasks: task.tasks })
-      : (task: { tasks: Tasks }) => tasks.createTask(task);
+      ? (task: { tasks: Tasks }) => {
+          console.log("Updating task:", task);
+          return tasks.updateTask({ id: currentTask.id!, tasks: task.tasks });
+        }
+      : (task: { tasks: Tasks }) => {
+          console.log("Creating task:", task);
+          return tasks.createTask(task);
+        };
+
+    const taskData = {
+      tasks: {
+        ...formData,
+        // Converti la stringa della data in oggetto Date solo per l'API
+        startDate: formData.startDate ? new Date(formData.startDate + "T00:00:00") : new Date(),
+        projectId: typeof finalProjectId === "string" ? Number(finalProjectId) : finalProjectId,
+      },
+    };
+
+    console.log("Task data to save:", taskData);
 
     try {
-      await save({
-        tasks: {
-          ...formData,
-          startDate: new Date(formData.startDate?.toString() || ""),
-          projectId: typeof finalProjectId === "string" ? Number(finalProjectId) : finalProjectId,
-        },
-      });
+      const result = await save(taskData);
+      console.log("Save result:", result);
+
+      // Ricarica i progetti dopo il salvataggio
+      await refreshProjects();
+      console.log("Projects refreshed");
+
       alert("Task creato!");
       navigate("/");
     } catch (error) {
+      console.error("Error saving task:", error);
       alert("Errore durante la creazione del task.");
     }
   };
@@ -99,8 +126,7 @@ export function TaskForm() {
         <input
           type="date"
           name="startDate"
-          value={formData.startDate?.toString()}
-          onChange={handleChange}
+          value={formData.startDate ? new Date(formData.startDate).toISOString().slice(0, 10) : today}          onChange={handleChange}
           required
         />
 

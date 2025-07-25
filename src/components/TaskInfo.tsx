@@ -5,7 +5,7 @@ import { ProjectsDataContext } from "../pages/ProjectsContext";
 
 export function TaskInfo() {
   const navigate = useNavigate();
-  const projectsData = useContext(ProjectsDataContext);
+  const { projectsData } = useContext(ProjectsDataContext);
   const { taskId } = useParams();
 
   const task = projectsData
@@ -16,8 +16,8 @@ export function TaskInfo() {
     navigate("/");
   };
 
-  if(!task){
-    return(
+  if (!task) {
+    return (
       <div>
         Task non trovato!
       </div>
