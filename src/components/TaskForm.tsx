@@ -24,7 +24,16 @@ export function TaskForm() {
     state: TasksStateEnum.InProgress,
   };
 
-  const [formData, setFormData] = useState(currentTask || emptyState);
+  const [formData, setFormData] = useState(() => {
+    const base = currentTask || emptyState;
+    return {
+      ...base,
+      // MODIFICATO: forza la startDate in YYYY-MM-DD
+      startDate: base.startDate
+        ? new Date(base.startDate).toISOString().slice(0, 10)
+        : today,
+    };
+  });
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -56,8 +65,11 @@ export function TaskForm() {
       await save({
         tasks: {
           ...formData,
-          startDate: new Date(formData.startDate?.toString() || ""),
-          projectId: typeof finalProjectId === "string" ? Number(finalProjectId) : finalProjectId,
+          startDate: new Date(formData.startDate),
+          projectId:
+            typeof finalProjectId === "string"
+              ? Number(finalProjectId)
+              : finalProjectId,
         },
       });
       alert("Task creato!");
@@ -99,7 +111,7 @@ export function TaskForm() {
         <input
           type="date"
           name="startDate"
-          value={formData.startDate?.toString()}
+          value={formData.startDate}
           onChange={handleChange}
           required
         />
@@ -121,7 +133,7 @@ export function TaskForm() {
         </select>
 
         <button className={classes.addBtn} type="submit">
-          Crea Task
+          {currentTask ? "Aggiorna Task" : "Crea Task"}
         </button>
       </form>
     </div>
