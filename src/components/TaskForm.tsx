@@ -8,12 +8,31 @@ import classes from "./TaskForm.module.css";
 export function TaskForm() {
   const navigate = useNavigate();
   const { id: taskId, projectId } = useParams();
-  const projectsData = useContext(ProjectsDataContext);
+
+  // Ora destrutturi anche refreshProjects dal contesto
+  const { projectsData, refreshProjects } = useContext(ProjectsDataContext);
+
   const currentTask = projectsData
     .flatMap((project) => project.tasks || [])
     .find((t) => t.id?.toString() === taskId);
 
   const today = new Date().toISOString().slice(0, 10);
+
+  // Funzione helper per convertire Date in formato YYYY-MM-DD
+  const formatDateForInput = (date: string | Date | null | undefined): string => {
+    if (!date) return today;
+    if (typeof date === 'string') {
+      // Se è già una stringa, assumiamo sia nel formato corretto
+      if (date.includes('T')) {
+        return date.slice(0, 10);
+      }
+      return date;
+    }
+    if (date instanceof Date) {
+      return date.toISOString().slice(0, 10);
+    }
+    return today;
+  };
 
   const emptyState = {
     code: "",
@@ -24,16 +43,21 @@ export function TaskForm() {
     state: TasksStateEnum.InProgress,
   };
 
+  // Inizializza formData con la data formattata correttamente
   const [formData, setFormData] = useState(() => {
-    const base = currentTask || emptyState;
-    return {
-      ...base,
-      // MODIFICATO: forza la startDate in YYYY-MM-DD
-      startDate: base.startDate
-        ? new Date(base.startDate).toISOString().slice(0, 10)
-        : today,
-    };
+    if (currentTask) {
+      return {
+        ...currentTask,
+        startDate: formatDateForInput(currentTask.startDate)
+      };
+    }
+    return emptyState;
   });
+
+  // Debug: mostra i parametri URL
+  console.log("URL params:", { taskId, projectId });
+  console.log("Current task:", currentTask);
+  console.log("Form data:", formData);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -51,31 +75,48 @@ export function TaskForm() {
     e.preventDefault();
 
     const finalProjectId = currentTask?.projectId || projectId;
+    console.log("Final project ID:", finalProjectId);
+
     if (!finalProjectId) {
       alert("Project ID mancante!");
       return;
     }
 
     const save = currentTask
-      ? (task: { tasks: Tasks }) =>
-          tasks.updateTask({ id: currentTask.id!, tasks: task.tasks })
-      : (task: { tasks: Tasks }) => tasks.createTask(task);
+      ? (task: { tasks: Tasks }) => {
+          console.log("Updating task:", task);
+          return tasks.updateTask({ id: currentTask.id!, tasks: task.tasks });
+        }
+      : (task: { tasks: Tasks }) => {
+          console.log("Creating task:", task);
+          return tasks.createTask(task);
+        };
+
+    const taskData = {
+      tasks: {
+        ...formData,
+        // Converti la stringa della data in oggetto Date per l'API
+        // Aggiungi l'orario per evitare problemi di timezone
+        startDate: formData.startDate ? new Date(formData.startDate + "T00:00:00.000Z") : new Date(),
+        projectId: typeof finalProjectId === "string" ? Number(finalProjectId) : finalProjectId,
+      },
+    };
+
+    console.log("Task data to save:", taskData);
 
     try {
-      await save({
-        tasks: {
-          ...formData,
-          startDate: new Date(formData.startDate),
-          projectId:
-            typeof finalProjectId === "string"
-              ? Number(finalProjectId)
-              : finalProjectId,
-        },
-      });
-      alert("Task creato!");
+      const result = await save(taskData);
+      console.log("Save result:", result);
+
+      // Ricarica i progetti dopo il salvataggio
+      await refreshProjects();
+      console.log("Projects refreshed");
+
+      alert("Task salvato!");
       navigate("/");
     } catch (error) {
-      alert("Errore durante la creazione del task.");
+      console.error("Error saving task:", error);
+      alert("Errore durante il salvataggio del task.");
     }
   };
 

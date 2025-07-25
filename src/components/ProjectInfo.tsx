@@ -5,8 +5,8 @@ import { ProjectsDataContext } from "../pages/ProjectsContext";
 
 export function ProjectInfo() {
   const navigate = useNavigate();
-  const projectsData = useContext(ProjectsDataContext);
-  const {projectId} = useParams();
+  const { projectsData } = useContext(ProjectsDataContext);
+  const { projectId } = useParams();
 
   const project = projectsData.find(p => p.id?.toString() === projectId);
 
@@ -14,8 +14,8 @@ export function ProjectInfo() {
     navigate("/");
   };
 
-  if(!project){
-    return(
+  if (!project) {
+    return (
       <div>
         Progetto non trovato!
       </div>
