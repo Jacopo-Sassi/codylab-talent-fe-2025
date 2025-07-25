@@ -18,6 +18,22 @@ export function TaskForm() {
 
   const today = new Date().toISOString().slice(0, 10);
 
+  // Funzione helper per convertire Date in formato YYYY-MM-DD
+  const formatDateForInput = (date: string | Date | null | undefined): string => {
+    if (!date) return today;
+    if (typeof date === 'string') {
+      // Se è già una stringa, assumiamo sia nel formato corretto
+      if (date.includes('T')) {
+        return date.slice(0, 10);
+      }
+      return date;
+    }
+    if (date instanceof Date) {
+      return date.toISOString().slice(0, 10);
+    }
+    return today;
+  };
+
   const emptyState = {
     code: "",
     name: "",
@@ -27,7 +43,16 @@ export function TaskForm() {
     state: TasksStateEnum.InProgress,
   };
 
-  const [formData, setFormData] = useState(currentTask || emptyState);
+  // Inizializza formData con la data formattata correttamente
+  const [formData, setFormData] = useState(() => {
+    if (currentTask) {
+      return {
+        ...currentTask,
+        startDate: formatDateForInput(currentTask.startDate)
+      };
+    }
+    return emptyState;
+  });
 
   // Debug: mostra i parametri URL
   console.log("URL params:", { taskId, projectId });
@@ -70,8 +95,9 @@ export function TaskForm() {
     const taskData = {
       tasks: {
         ...formData,
-        // Converti la stringa della data in oggetto Date solo per l'API
-        startDate: formData.startDate ? new Date(formData.startDate + "T00:00:00") : new Date(),
+        // Converti la stringa della data in oggetto Date per l'API
+        // Aggiungi l'orario per evitare problemi di timezone
+        startDate: formData.startDate ? new Date(formData.startDate + "T00:00:00.000Z") : new Date(),
         projectId: typeof finalProjectId === "string" ? Number(finalProjectId) : finalProjectId,
       },
     };
@@ -86,11 +112,11 @@ export function TaskForm() {
       await refreshProjects();
       console.log("Projects refreshed");
 
-      alert("Task creato!");
+      alert("Task salvato!");
       navigate("/");
     } catch (error) {
       console.error("Error saving task:", error);
-      alert("Errore durante la creazione del task.");
+      alert("Errore durante il salvataggio del task.");
     }
   };
 
@@ -126,7 +152,8 @@ export function TaskForm() {
         <input
           type="date"
           name="startDate"
-          value={formData.startDate ? new Date(formData.startDate).toISOString().slice(0, 10) : today}          onChange={handleChange}
+          value={formData.startDate}
+          onChange={handleChange}
           required
         />
 
@@ -147,7 +174,7 @@ export function TaskForm() {
         </select>
 
         <button className={classes.addBtn} type="submit">
-          Crea Task
+          {currentTask ? "Aggiorna Task" : "Crea Task"}
         </button>
       </form>
     </div>
