@@ -7,9 +7,11 @@ import { ProjectForm } from "./components/ProjectForm";
 import { ProjectInfo } from "./components/ProjectInfo";
 import { TaskForm } from "./components/TaskForm";
 import { TaskInfo } from "./components/TaskInfo";
+import { UserInfo } from "./components/UserInfo";
 import { Projects } from "./pages/Projects";
-import { Workload } from "./pages/Workload";
 import { ProjectsContext } from "./pages/ProjectsContext";
+import { Workload } from "./pages/Workload";
+import { WorkloadContexts } from "./pages/WorkloadContext"; // <-- Importato qui
 
 function App() {
   const { loading } = useAuth();
@@ -28,14 +30,23 @@ function App() {
               <Route path="tasks/:taskId" element={<TaskInfo />} />
             </Route>
             <Route path="/projects/add" element={<ProjectForm />} />
-            <Route path="/projects/:projectId/tasks/add" element={<TaskForm />} />
+            <Route
+              path="/projects/:projectId/tasks/add"
+              element={<TaskForm />}
+            />
             <Route path="/project/:id/edit" element={<ProjectForm />} />
             <Route path="/task/:id/edit" element={<TaskForm />} />
           </Route>
-          <Route
-            path="/workload"
-            element={<Workload searchTerm={searchTerm} />}
-          />
+
+          {/* 👇 Nuovo blocco per le route che usano WorkloadContext */}
+          <Route element={<WorkloadContexts />}>
+            <Route
+              path="/workload"
+              element={<Workload searchTerm={searchTerm} />}
+            >
+              <Route path="/workload/user/:userId" element={<UserInfo />} />
+            </Route>
+          </Route>
         </Routes>
       </Router>
     </div>
