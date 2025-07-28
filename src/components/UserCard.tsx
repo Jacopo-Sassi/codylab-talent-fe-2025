@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import type { Users } from "../generated/api/models/Users";
 import classes from "./UserCard.module.css";
+import type { Tasks } from "../generated/api";
 
-export function UserCard({ user, onUserClick }: { user: Users; onUserClick: (user: Users) => void }) {
+export function UserCard({ user, onUserClick, onTaskClick }: { user: Users; onUserClick: (user: Users) => void; onTaskClick: (task: Tasks) => void }) {
   const {userId} = useParams();
 
 
@@ -14,7 +15,7 @@ export function UserCard({ user, onUserClick }: { user: Users; onUserClick: (use
           <div key={task.id}>
             <h4>{task.projectId}</h4>
             <ul>
-              <li>{task.name}</li>
+              <li onClick={()=>onTaskClick(task)}>{task.name}</li>
             </ul>
           </div>
         ))}

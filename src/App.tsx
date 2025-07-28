@@ -8,6 +8,7 @@ import { ProjectInfo } from "./components/ProjectInfo";
 import { TaskForm } from "./components/TaskForm";
 import { TaskInfo } from "./components/TaskInfo";
 import { UserInfo } from "./components/UserInfo";
+import { UserTasksInfo } from "./components/UserTasksInfo";
 import { Projects } from "./pages/Projects";
 import { ProjectsContext } from "./pages/ProjectsContext";
 import { Workload } from "./pages/Workload";
@@ -45,6 +46,7 @@ function App() {
               element={<Workload searchTerm={searchTerm} />}
             >
               <Route path="/workload/user/:userId" element={<UserInfo />} />
+              <Route path="/workload/task/:taskId" element={<UserTasksInfo />} />
             </Route>
           </Route>
         </Routes>
