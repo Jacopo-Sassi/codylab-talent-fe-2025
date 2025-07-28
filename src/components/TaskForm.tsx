@@ -54,11 +54,6 @@ export function TaskForm() {
     return emptyState;
   });
 
-  // Debug: mostra i parametri URL
-  console.log("URL params:", { taskId, projectId });
-  console.log("Current task:", currentTask);
-  console.log("Form data:", formData);
-
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -75,7 +70,6 @@ export function TaskForm() {
     e.preventDefault();
 
     const finalProjectId = currentTask?.projectId || projectId;
-    console.log("Final project ID:", finalProjectId);
 
     if (!finalProjectId) {
       alert("Project ID mancante!");
@@ -84,11 +78,9 @@ export function TaskForm() {
 
     const save = currentTask
       ? (task: { tasks: Tasks }) => {
-          console.log("Updating task:", task);
           return tasks.updateTask({ id: currentTask.id!, tasks: task.tasks });
         }
       : (task: { tasks: Tasks }) => {
-          console.log("Creating task:", task);
           return tasks.createTask(task);
         };
 
@@ -102,15 +94,12 @@ export function TaskForm() {
       },
     };
 
-    console.log("Task data to save:", taskData);
 
     try {
       const result = await save(taskData);
-      console.log("Save result:", result);
 
       // Ricarica i progetti dopo il salvataggio
       await refreshProjects();
-      console.log("Projects refreshed");
 
       alert("Task salvato!");
       navigate("/");

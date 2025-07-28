@@ -1,13 +1,36 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import classes from "./ProjectForm.module.css";
-import { ProjectsStateEnum } from "../generated/api";
+import { ProjectsStateEnum, type Projects, } from "../generated/api";
 import { projects } from "../lib/api/api";
+import { ProjectsDataContext } from "../pages/ProjectsContext";
 
 export function ProjectForm() {
   const navigate = useNavigate();
+  const {id: projectId} = useParams();
 
-  const [formData, setFormData] = useState({
+  const {projectsData, refreshProjects} = useContext(ProjectsDataContext);
+
+  const currentProject = projectsData.find((p)=>p.id?.toString() === projectId);
+
+  const today = new Date().toISOString().slice(0,10);
+
+  const formatDateForInput = (date: string | Date | null | undefined): string => {
+    if (!date) return today;
+    if (typeof date === 'string') {
+      // Se è già una stringa, assumiamo sia nel formato corretto
+      if (date.includes('T')) {
+        return date.slice(0, 10);
+      }
+      return date;
+    }
+    if (date instanceof Date) {
+      return date.toISOString().slice(0, 10);
+    }
+    return today;
+  };
+
+  const emptyState = {
     code: "",
     name: "",
     description: "",
@@ -15,7 +38,17 @@ export function ProjectForm() {
     duration: 0,
     manager: "",
     state: ProjectsStateEnum.Open,
-  });
+  };
+
+  const [formData, setFormData] = useState(()=>{
+    if(currentProject){
+      return{
+        ...currentProject,
+        startDate: formatDateForInput(currentProject.startDate)
+      }
+    }
+    return emptyState
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -27,14 +60,27 @@ export function ProjectForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const save = currentProject ? (project: {projects: Projects}) => {
+      return projects.updateProject({id: currentProject.id!, projects: project.projects})
+    } 
+    : (project : {projects: Projects}) => {
+      return projects.createProject(project);
+    };
+
+    const projectData = {
+      projects: {
+        ...formData,
+        startDate: formData.startDate ? new Date(formData.startDate + "T00:00:00.000Z") : new Date(),
+      }
+    }
     try {
-      await projects.createProject({
-        projects: { ...formData, startDate: new Date(formData.startDate) },
-      });
-      alert("Progetto creato!");
+      const result = await save(projectData);
+      await refreshProjects();
+      alert("Projetto salvato");
       navigate("/");
     } catch (error) {
-      alert("Errore durante la creazione del progetto.");
+      alert("Errore durante il salvataggio del progetto.");
     }
   };
 
