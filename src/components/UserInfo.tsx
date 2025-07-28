@@ -23,7 +23,7 @@ export function UserInfo() {
         ×
       </button>
       <div className={classes.user_fistName}>
-        <h3>{user.firstName}</h3>
+        <h3>{user.firstName} {user.lastName}</h3>
         <Link to={`/user/${user.id}/edit`}>
           {" "}
           <span className="material-symbols-outlined">edit</span>{" "}
@@ -33,10 +33,16 @@ export function UserInfo() {
         <strong>ID:</strong> {user.id}
       </p>
       <p>
-        <strong>Descrizione:</strong> {user.email || "Nessuna descrizione."}
+        <strong>Username:</strong> {user.username}
       </p>
       <p>
-        <strong>Durata:</strong> {user.dailyHours || "Nessuna durata."} giorni
+        <strong>Email:</strong> {user.email}
+      </p>
+      <p>
+        <strong>Profilo:</strong> {user.profile || "Nessun profilo."}
+      </p>
+      <p>
+        <strong>Orario giornaliero:</strong> {user.dailyHours || "Nessun orario."} ore
       </p>
     </div>
   );

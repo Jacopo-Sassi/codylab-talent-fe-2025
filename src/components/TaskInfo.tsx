@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import classes from "./TaskInfo.module.css";
 import { ProjectsDataContext } from "../pages/ProjectsContext";
+import classes from "./TaskInfo.module.css";
 
 export function TaskInfo() {
   const navigate = useNavigate();
@@ -17,11 +17,7 @@ export function TaskInfo() {
   };
 
   if (!task) {
-    return (
-      <div>
-        Task non trovato!
-      </div>
-    )
+    return <div>Task non trovato!</div>;
   }
 
   return (
@@ -40,6 +36,12 @@ export function TaskInfo() {
         <strong>ID:</strong> {task.id}
       </p>
       <p>
+        <strong>Codice:</strong> {task.code}
+      </p>
+      <p>
+        <strong>Progetto:</strong> {task.projectId}
+      </p>
+      <p>
         <strong>Descrizione:</strong>{" "}
         {task.description || "Nessuna descrizione."}
       </p>
@@ -51,6 +53,9 @@ export function TaskInfo() {
       </p>
       <p>
         <strong>Durata:</strong> {task.duration || "Nessuna durata."} giorni
+      </p>
+      <p>
+        <strong>Stato:</strong> {task.state?.toUpperCase() || "Nessuno stato."}
       </p>
     </div>
   );

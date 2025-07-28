@@ -34,6 +34,12 @@ export function ProjectInfo() {
         <strong>ID:</strong> {project.id}
       </p>
       <p>
+        <strong>Codice:</strong> {project.code}
+      </p>
+      <p>
+        <strong>Manager:</strong> {project.manager}
+      </p>
+      <p>
         <strong>Descrizione:</strong>{" "}
         {project.description || "Nessuna descrizione."}
       </p>
@@ -45,6 +51,9 @@ export function ProjectInfo() {
       </p>
       <p>
         <strong>Durata:</strong> {project.duration || "Nessuna durata."} giorni
+      </p>
+      <p>
+        <strong>Stato:</strong> {project.state?.toUpperCase() || "Nessuno stato."}
       </p>
     </div>
   );

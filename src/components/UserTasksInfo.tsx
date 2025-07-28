@@ -41,6 +41,12 @@ export function UserTasksInfo() {
         <strong>ID:</strong> {task.id}
       </p>
       <p>
+        <strong>Codice:</strong> {task.code}
+      </p>
+      <p>
+        <strong>Progetto:</strong> {task.projectId}
+      </p>
+      <p>
         <strong>Descrizione:</strong>{" "}
         {task.description || "Nessuna descrizione."}
       </p>
@@ -52,6 +58,9 @@ export function UserTasksInfo() {
       </p>
       <p>
         <strong>Durata:</strong> {task.duration || "Nessuna durata."} giorni
+      </p>
+      <p>
+        <strong>Stato:</strong> {task.state?.toUpperCase() || "Nessuno stato."}
       </p>
     </div>
   );
