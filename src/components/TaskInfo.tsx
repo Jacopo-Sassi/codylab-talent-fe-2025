@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ProjectsDataContext } from "../pages/ProjectsContext";
 import classes from "./TaskInfo.module.css";
-import { TasksStateEnum, type Tasks } from "../generated/api";
+import { TasksStateEnum } from "../generated/api";
 import { tasks } from "../lib/api/api";
 
 export function TaskInfo() {

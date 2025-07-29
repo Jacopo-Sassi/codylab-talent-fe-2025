@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import classes from "./ProjectInfo.module.css";
 import { ProjectsDataContext } from "../pages/ProjectsContext";
@@ -12,21 +12,16 @@ export function ProjectInfo() {
 
   const project = projectsData.find(p => p.id?.toString() === projectId);
 
-  const [selectedState, setSelectedState] = useState("");
+  const [selectedState, setSelectedState] = useState<ProjectsStateEnum | undefined>(project?.state);
 
-  useEffect(() => {
-    if (project?.state) {
-      setSelectedState(project.state);
-    }
-  }, [project]);
 
   const onClose = () => {
     navigate("/");
   };
 
-  const updateState = (projectId: number, newState: string) => {
+  const updateState = (projectId: number, newState: ProjectsStateEnum) => {
     if (!project) return;
-    const updatedProject: Projects = { ...project, state: newState as ProjectsStateEnum };
+    const updatedProject: Projects = { ...project, state: newState};
     projects.updateProject({ id: projectId, projects: updatedProject }).then(() => {
       refreshProjects();
       setSelectedState(newState);
@@ -62,7 +57,7 @@ export function ProjectInfo() {
             name="state"
             value={selectedState}
             onChange={(e) => {
-              const newState = e.target.value;
+              const newState = e.target.value as ProjectsStateEnum;
               setSelectedState(newState);
               updateState(Number(project.id), newState);
             }}
