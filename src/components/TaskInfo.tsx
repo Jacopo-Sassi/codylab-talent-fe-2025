@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ProjectsDataContext } from "../pages/ProjectsContext";
 import classes from "./TaskInfo.module.css";
@@ -14,24 +14,15 @@ export function TaskInfo() {
     .flatMap((project) => project.tasks || [])
     .find((t) => t.id?.toString() === taskId);
 
-  const [selectedState, setSelectedState] = useState("");
-
-  useEffect(() => {
-    if (task?.state) {
-      const foundKey = Object.keys(TasksStateEnum).find(
-        (key) => TasksStateEnum[key as keyof typeof TasksStateEnum] === task.state
-      );
-      if (foundKey) setSelectedState(foundKey);
-    }
-  }, [task]);
+  const [selectedState, setSelectedState] = useState<TasksStateEnum | undefined>(task?.state);
 
   const onClose = () => {
     navigate("/");
   };
 
-  const updateState = (taskId: number, newState: string) => {
+  const updateState = (taskId: number, newState: TasksStateEnum) => {
     if (!task) return;
-    const updatedTask = { ...task, state: TasksStateEnum[newState as keyof typeof TasksStateEnum] };
+    const updatedTask = { ...task, state: newState };
     tasks.updateTask({ id: taskId, tasks: updatedTask }).then(() => {
       refreshProjects();
       setSelectedState(newState);
@@ -66,14 +57,13 @@ export function TaskInfo() {
           <select
             value={selectedState}
             onChange={(e) => {
-              const newState = e.target.value;
-              setSelectedState(newState);
+              const newState = e.target.value as TasksStateEnum;
               updateState(Number(task.id), newState);
             }}
           >
-            <option value="InProgress">In corso</option>
-            <option value="Completed">Completato</option>
-            <option value="Deleted">Eliminato</option>
+            <option value={TasksStateEnum.InProgress}>In corso</option>
+            <option value={TasksStateEnum.Completed}>Completato</option>
+            <option value={TasksStateEnum.Deleted}>Eliminato</option>
           </select>
         </label>
       </form>
