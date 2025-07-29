@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "api:generate": "openapi-generator-cli generate -g typescript-fetch -i ./api/api.yml -o ./src/generated/api"
+    "api:generate": "openapi-generator-cli generate -g typescript-fetch -i ./api/api.yml -o ./src/generated/api",
+    "postinstall": "msw init public --save"
   },
   "dependencies": {
     "dayjs": "^1.11.13",
@@ -26,6 +27,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "msw": "^2.10.4",
     "openapitools": "github:openapitools/openapi-generator-cli",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
@@ -33,5 +35,10 @@
   },
   "volta": {
     "node": "22.17.1"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
