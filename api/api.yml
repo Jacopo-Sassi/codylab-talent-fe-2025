@@ -1002,8 +1002,8 @@ components:
           type: string
           description: User profile (e.g., administrator, standard user).
         dailyHours:
-          type: integer
-          description: User's daily working hours.
+          type: number
+          format: double
         managedProjects:
           type: array
           items:

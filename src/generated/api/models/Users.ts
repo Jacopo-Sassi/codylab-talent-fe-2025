@@ -71,7 +71,7 @@ export interface Users {
      */
     profile?: string;
     /**
-     * User's daily working hours.
+     * 
      * @type {number}
      * @memberof Users
      */
