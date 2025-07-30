@@ -1,0 +1,15 @@
+[
+  {
+    "id": 0,
+    "projectId": 0,
+    "code": "string",
+    "name": "string",
+    "description": "string",
+    "startDate": {
+      "value": "2025-01-01",
+      "summary": "Task start date"
+    },
+    "duration": 0,
+    "state": "in progress"
+  }
+]
