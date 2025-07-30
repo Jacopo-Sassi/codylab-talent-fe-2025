@@ -25,5 +25,4 @@ export const projects = [
 
       return HttpResponse.json(getProjects);
     }
-  ),
-];
+  )];

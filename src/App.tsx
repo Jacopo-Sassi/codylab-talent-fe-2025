@@ -13,6 +13,7 @@ import { Projects } from "./pages/Projects";
 import { ProjectsContext } from "./pages/ProjectsContext";
 import { Workload } from "./pages/Workload";
 import { WorkloadContexts } from "./pages/WorkloadContext"; // <-- Importato qui
+import { UserForm } from "./components/UserForm";
 
 function App() {
   const { loading } = useAuth();
@@ -48,6 +49,7 @@ function App() {
               <Route path="/workload/user/:userId" element={<UserInfo />} />
               <Route path="/workload/task/:taskId" element={<UserTasksInfo />} />
             </Route>
+            <Route path="/workload/add" element={<UserForm />} />
           </Route>
         </Routes>
       </Router>
