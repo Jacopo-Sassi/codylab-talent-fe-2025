@@ -6,78 +6,79 @@ import type { Users } from "../generated/api";
 import { users } from "../lib/api/api";
 
 export function UserForm() {
-    const {workloadData: usersData, refreshWorkload} = useContext(WorkloadContext);
-    
+    const { workloadData: usersData, refreshWorkload } = useContext(WorkloadContext);
+
     const navigate = useNavigate();
-    const {id : userId} = useParams();
+    const { id: userId } = useParams();
     const currentUser = usersData.find((u) => u.id?.toString() === userId);
+
     const emptyState = {
-        id: undefined,
-        firstname: "",
-        lastname: "",
+        firstName: "",
+        lastName: "",
         username: "",
         email: "",
         profile: "",
-        workingHours: 0,
-    };
-    const [formData, setFormData] = useState({
-       ...emptyState
-    });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-        [e.target.name]: e.target.name === "workingHours" ? Number(e.target.value) : e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const save = currentUser ? (user: {users: Users}) => {
-      return users.updateUser({ id: currentUser.id!, users: user.users });
-    } : (user: { users: Users }) => {
-      return users.createUser(user);
-    };
-    const userToSave: Users = {
-      ...formData,
+        dailyHours: 0,
     };
 
+    const [formData, setFormData] = useState<Users>(currentUser || emptyState);
 
-  try {
-    const result = await save({ users: userToSave });
-    refreshWorkload();
-    navigate("/users");
-    console.log("User saved successfully:", result);
-  } catch (error) {
-    console.error("Error saving user:", error);
-  }
-}
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: name === "dailyHours" ? Number(value) : value,
+        }));
+    };
 
-  return (
-    <div className={classes.project_form}>
-      <form onSubmit={handleSubmit}>
-        <label>Nome Utente</label>
-        <input type="text" name="firstname" value={formData.firstname} onChange={handleChange} required />
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const savedData = { ...formData, dailyHours: formData.dailyHours,profile: formData.profile === "manager" ? "manager" : "developer" };
+        try {
+            if (currentUser) {
+                await users.updateUser({
+                    id: currentUser.id!,
+                    users: savedData
+                });
+            } else {
+                await users.createUser({ users: savedData }) ;
+            }
 
-        <label>Cognome Utente</label>
-        <input type="text" name="lastname" value={formData.lastname} onChange={handleChange} required />
+            await refreshWorkload();
+            navigate("/workload");
+        } catch (error) {
+            console.error("Error saving user:", error);
+        }
+    };
 
-        <label>Username</label>
-        <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+    return (
+        <div className={classes.project_form}>
+            <form onSubmit={handleSubmit}>
+                <label>Nome Utente</label>
+                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
 
-        <label>Email</label>
-        <input type="text" name="email" value={formData.email} onChange={handleChange} required />
-        <label>Profilo</label>
-        <select name="profile" value={formData.profile} onChange={handleChange} required>
-          <option value="manager">Manager</option>
-          <option value="developer">Developer</option>
-        </select>
-        <label>Ore di lavoro</label>
-        <input type="number" name="workingHours" value={formData.workingHours} onChange={handleChange} required />
+                <label>Cognome Utente</label>
+                <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
 
-        <button className={classes.addBtn} type="submit">Crea Utente</button>
-      </form>
-    </div>
-  );
+                <label>Username</label>
+                <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+
+                <label>Email</label>
+                <input type="text" name="email" value={formData.email} onChange={handleChange} required />
+
+                <label>Profilo</label>
+                <select name="profile" value={formData.profile} onChange={handleChange} required>
+                    <option value="manager">Manager</option>
+                    <option value="developer">Developer</option>
+                </select>
+
+                <label>Ore di lavoro</label>
+                <input type="number" name="dailyHours" value={formData.dailyHours}onChange={handleChange} required />
+
+                <button className={classes.addBtn} type="submit">
+                    {currentUser ? "Aggiorna Utente" : "Crea Utente"}
+                </button>
+            </form>
+        </div>
+    );
 }
