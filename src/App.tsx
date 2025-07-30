@@ -50,6 +50,7 @@ function App() {
               <Route path="/workload/task/:taskId" element={<UserTasksInfo />} />
             </Route>
             <Route path="/workload/add" element={<UserForm />} />
+            <Route path="/workload/:id/edit" element={<UserForm />} />
           </Route>
         </Routes>
       </Router>

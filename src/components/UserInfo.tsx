@@ -24,7 +24,7 @@ export function UserInfo() {
       </button>
       <div className={classes.user_fistName}>
         <h3>{user.firstName} {user.lastName}</h3>
-        <Link to={`/user/${user.id}/edit`}>
+        <Link to={`/workload/${user.id}/edit`}>
           {" "}
           <span className="material-symbols-outlined">edit</span>{" "}
         </Link>
