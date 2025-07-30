@@ -27,21 +27,21 @@ export function UserForm() {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: name === "dailyHours" ? Number(value) : value,
-        }));
+            [name]: name === "dailyHours" ? Number(value) : value
+                }));
+        
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const savedData = { ...formData, dailyHours: formData.dailyHours,profile: formData.profile === "manager" ? "manager" : "developer" };
         try {
             if (currentUser) {
                 await users.updateUser({
                     id: currentUser.id!,
-                    users: savedData
+                    users: { ...formData, dailyHours: formData.dailyHours, profile: formData.profile }
                 });
             } else {
-                await users.createUser({ users: savedData }) ;
+                await users.createUser({ users: { ...formData, dailyHours: formData.dailyHours, profile: formData.profile } });
             }
 
             await refreshWorkload();
@@ -67,13 +67,11 @@ export function UserForm() {
                 <input type="text" name="email" value={formData.email} onChange={handleChange} required />
 
                 <label>Profilo</label>
-                <select name="profile" value={formData.profile} onChange={handleChange} required>
-                    <option value="manager">Manager</option>
-                    <option value="developer">Developer</option>
-                </select>
+               <input type="text" name="profile" value={formData.profile} onChange={handleChange}
+                required />
 
                 <label>Ore di lavoro</label>
-                <input type="number" name="dailyHours" value={formData.dailyHours}onChange={handleChange} required />
+                <input type="number" name="dailyHours" value={formData.dailyHours} onChange={handleChange} required />
 
                 <button className={classes.addBtn} type="submit">
                     {currentUser ? "Aggiorna Utente" : "Crea Utente"}
