@@ -112,7 +112,7 @@ export function ProjectForm() {
           <option value={ProjectsStateEnum.Deleted}>Deleted</option>
         </select>
 
-        <button className={classes.addBtn} type="submit">Crea Progetto</button>
+        <button className={classes.addBtn} type="submit">{currentProject ? "Aggiorna progetto" : "Crea progetto"}</button>
       </form>
     </div>
   );
