@@ -10,7 +10,7 @@
   h2 {
     margin: 0 0 8px;
     font-size: 1.3em;
-    font-weight: normal;
+    font-weight: bold;
     cursor: pointer;
     &:hover {
       background-color: #ececec;
