@@ -15,7 +15,7 @@ export function useAuth() {
       logoutTimer = setTimeout(() => {
         console.warn("Inattività prolungata: eseguo il logout.");
         keycloak.logout();
-      }, 3 * 60 * 1000);
+      }, 3 * 60000);
     };
 
     const startInactivityWatcher = () => {
