@@ -1,35 +1,54 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import keycloak from "../../components/keycloak";
 
 export function useAuth() {
-  const [authenticated, setAuthenticated] = useState(keycloak.authenticated ?? false);
-  const [token, setToken] = useState<string | undefined>(keycloak.token);
-  const [loading, setLoading] = useState(false); 
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [token, setToken] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(false);
+    let refreshInterval: ReturnType<typeof setInterval> | undefined;
 
-    const refreshInterval = setInterval(() => {
-      keycloak
-        .updateToken(70)
-        .then((refreshed) => {
-          if (refreshed) {
-            setToken(keycloak.token);
-          }
-        })
-        .catch(() => {
-          console.warn("Token scaduto, richiedendo login");
-          keycloak.login();
-        });
-    }, 60000);
+    keycloak
+      .init({
+        onLoad: "login-required",
+        checkLoginIframe: false,
+        pkceMethod: "S256",
+        redirectUri: "http://localhost:5173",
+      })
+      .then((auth) => {
+        setAuthenticated(auth);
+        setToken(keycloak.token);
+        setLoading(false);
 
-    return () => clearInterval(refreshInterval);
+        refreshInterval = setInterval(() => {
+          keycloak
+            .updateToken(70)
+            .then((refreshed) => {
+              if (refreshed && keycloak.token) {
+                setToken(keycloak.token);
+              }
+            })
+            .catch((error) => {
+              console.warn("Impossibile aggiornare il token, si richiede il login.", error);
+              setAuthenticated(false);
+              setToken(undefined);
+              keycloak.login();
+            });
+        }, 60000);
+      })
+      .catch((err) => {
+        console.error("Errore inizializzazione Keycloak", err);
+        setAuthenticated(false);
+        setLoading(false);
+      });
+
+    return () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    };
   }, []);
 
-  return {
-    loading,
-    authenticated,
-    token,
-    keycloak,
-  };
+  return { loading, authenticated, token, keycloak };
 }
