@@ -3,25 +3,42 @@ import keycloak from "../../components/keycloak";
 
 const BASE_PATH = "http://localhost:8090/api/v1";
 
-function createConfig() {
+async function createConfig(): Promise<Configuration> {
+  try {
+    await keycloak.updateToken(70);
+  } catch (error) {
+    console.warn("Errore aggiornamento token", error);
+    keycloak.login();
+  }
+
   return new Configuration({
     basePath: BASE_PATH,
     credentials: "include",
     headers: {
-      Authorization: `Bearer ${keycloak.token}`,
+      Authorization: keycloak.token ? `Bearer ${keycloak.token}` : "",
     },
   });
 }
 
 function createProxy(apiClass: any) {
-  let instance = new apiClass(createConfig());
+  let instance: any;
 
-  return new Proxy(instance, {
-    get(target, prop, receiver) {
-      instance = new apiClass(createConfig());
-      return Reflect.get(instance, prop, receiver);
-    },
-  });
+  return new Proxy(
+    {},
+    {
+      get(_target, prop, _receiver) {
+        return async (...args: any[]) => {
+          const config = await createConfig();
+          instance = new apiClass(config);
+          const method = instance[prop];
+          if (typeof method === "function") {
+            return method.apply(instance, args);
+          }
+          return method;
+        };
+      },
+    }
+  );
 }
 
 export const projects = createProxy(ProjectsApi);
