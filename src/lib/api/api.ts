@@ -1,24 +1,30 @@
 import { Configuration, ProjectsApi, SlotsApi, TasksApi, UsersApi } from "../../generated/api";
+import keycloak from "../../components/keycloak";
 
 const BASE_PATH = "http://localhost:8090/api/v1";
 
-
-export const projects = new ProjectsApi(new Configuration({
+function createConfig() {
+  return new Configuration({
     basePath: BASE_PATH,
     credentials: "include",
-}));
+    headers: {
+      Authorization: `Bearer ${keycloak.token}`,
+    },
+  });
+}
 
-export const slots = new SlotsApi(new Configuration({
-    basePath: BASE_PATH,
-    credentials: "include",
-}));
+function createProxy(apiClass: any) {
+  let instance = new apiClass(createConfig());
 
-export const tasks = new TasksApi(new Configuration({
-    basePath: BASE_PATH,
-    credentials: "include",
-}));
+  return new Proxy(instance, {
+    get(target, prop, receiver) {
+      instance = new apiClass(createConfig());
+      return Reflect.get(instance, prop, receiver);
+    },
+  });
+}
 
-export const users = new UsersApi(new Configuration({
-    basePath: BASE_PATH,
-    credentials: "include"
-}));
+export const projects = createProxy(ProjectsApi);
+export const slots = createProxy(SlotsApi);
+export const tasks = createProxy(TasksApi);
+export const users = createProxy(UsersApi);
