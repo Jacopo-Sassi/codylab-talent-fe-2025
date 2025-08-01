@@ -1,28 +1,35 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import keycloak from "../../components/keycloak";
 
 export function useAuth() {
-  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(keycloak.authenticated ?? false);
+  const [token, setToken] = useState<string | undefined>(keycloak.token);
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
-    fetch("http://localhost:8090/api/v1/projects", {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (res.status === 401 || res.status === 403 || res.status === 405) {
-          window.location.href =
-            "http://localhost:8090/oauth2/authorization/codylab-2025";
-        } else if (res.ok) {
-          setLoading(false);
-        } else {
-          console.error("Unexpected response:", res);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.error("fetch error:", err);
-        setLoading(false);
-      });
+    setLoading(false);
+
+    const refreshInterval = setInterval(() => {
+      keycloak
+        .updateToken(70)
+        .then((refreshed) => {
+          if (refreshed) {
+            setToken(keycloak.token);
+          }
+        })
+        .catch(() => {
+          console.warn("Token scaduto, richiedendo login");
+          keycloak.login();
+        });
+    }, 60000);
+
+    return () => clearInterval(refreshInterval);
   }, []);
 
-  return { loading };
+  return {
+    loading,
+    authenticated,
+    token,
+    keycloak,
+  };
 }
