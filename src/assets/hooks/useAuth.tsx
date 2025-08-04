@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import keycloak from "../../components/keycloak";
 
 export function useAuth() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
@@ -10,12 +9,14 @@ export function useAuth() {
     let refreshInterval: ReturnType<typeof setInterval> | undefined;
     let logoutTimer: ReturnType<typeof setTimeout>;
 
+    let keycloakInstance: any;
+
     const resetLogoutTimer = () => {
       clearTimeout(logoutTimer);
       logoutTimer = setTimeout(() => {
         console.warn("Inattività prolungata: eseguo il logout.");
-        keycloak.logout();
-      }, 3 * 60000);
+        keycloakInstance.logout();
+      }, 1 * 60000);
     };
 
     const startInactivityWatcher = () => {
@@ -34,14 +35,18 @@ export function useAuth() {
       clearTimeout(logoutTimer);
     };
 
-    keycloak
-      .init({
-        onLoad: "login-required",
-        checkLoginIframe: false,
-        pkceMethod: "S256",
-        redirectUri: "http://localhost:5173",
-      })
-      .then((auth) => {
+    const initialize = async () => {
+      try {
+        const { default: keycloak } = await import("../../components/keycloak");
+        keycloakInstance = keycloak;
+
+        const auth = await keycloak.init({
+          onLoad: "login-required",
+          checkLoginIframe: false,
+          pkceMethod: "S256",
+          redirectUri: window.location.origin,
+        });
+
         setAuthenticated(auth);
         setToken(keycloak.token);
         setLoading(false);
@@ -52,12 +57,12 @@ export function useAuth() {
           refreshInterval = setInterval(() => {
             keycloak
               .updateToken(70)
-              .then((refreshed) => {
+              .then((refreshed: boolean) => {
                 if (refreshed && keycloak.token) {
                   setToken(keycloak.token);
                 }
               })
-              .catch((error) => {
+              .catch((error: any) => {
                 console.warn("Impossibile aggiornare il token, eseguo login.", error);
                 setAuthenticated(false);
                 setToken(undefined);
@@ -66,20 +71,20 @@ export function useAuth() {
               });
           }, 60000);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Errore inizializzazione Keycloak", err);
         setAuthenticated(false);
         setLoading(false);
-      });
+      }
+    };
+
+    initialize();
 
     return () => {
-      if (refreshInterval) {
-        clearInterval(refreshInterval);
-      }
+      if (refreshInterval) clearInterval(refreshInterval);
       stopInactivityWatcher();
     };
   }, []);
 
-  return { loading, authenticated, token, keycloak };
+  return { loading, authenticated, token };
 }
