@@ -1,8 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
 import App from "./App";
-import { Mode } from "./utils/EnableMode";
-
+import { Mode } from "./utils/enableMode";
 async function enableMocking() {
   if (import.meta.env.MODE !== Mode) return;
 
