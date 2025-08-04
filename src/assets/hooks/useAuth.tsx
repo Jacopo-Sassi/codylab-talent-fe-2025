@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useAuth() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [token, setToken] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
+  const refreshInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+  const logoutTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const keycloakInstance = useRef<any>(null);
+
   useEffect(() => {
-    let refreshInterval: ReturnType<typeof setInterval> | undefined;
-    let logoutTimer: ReturnType<typeof setTimeout>;
-
-    let keycloakInstance: any;
-
     const resetLogoutTimer = () => {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
+      if (logoutTimer.current) clearTimeout(logoutTimer.current);
+      logoutTimer.current = setTimeout(() => {
         console.warn("Inattività prolungata: eseguo il logout.");
-        keycloakInstance.logout();
+        keycloakInstance.current?.logout();
       }, 1 * 60000);
     };
 
@@ -32,13 +31,13 @@ export function useAuth() {
       document.removeEventListener("keydown", resetLogoutTimer);
       document.removeEventListener("click", resetLogoutTimer);
       document.removeEventListener("scroll", resetLogoutTimer);
-      clearTimeout(logoutTimer);
+      if (logoutTimer.current) clearTimeout(logoutTimer.current);
     };
 
     const initialize = async () => {
       try {
         const { default: keycloak } = await import("../../components/keycloak");
-        keycloakInstance = keycloak;
+        keycloakInstance.current = keycloak;
 
         const auth = await keycloak.init({
           onLoad: "login-required",
@@ -54,7 +53,7 @@ export function useAuth() {
         if (auth) {
           startInactivityWatcher();
 
-          refreshInterval = setInterval(() => {
+          refreshInterval.current = setInterval(() => {
             keycloak
               .updateToken(70)
               .then((refreshed: boolean) => {
@@ -81,7 +80,7 @@ export function useAuth() {
     initialize();
 
     return () => {
-      if (refreshInterval) clearInterval(refreshInterval);
+      if (refreshInterval.current) clearInterval(refreshInterval.current);
       stopInactivityWatcher();
     };
   }, []);

@@ -1,5 +1,5 @@
 import type KeycloakType from "keycloak-js";
-import { Mode } from "../utils/enableMode";
+import { Mode } from "../utils/EnableMode";
 let keycloak: KeycloakType | any;
 
 if (import.meta.env.MODE === Mode) {
