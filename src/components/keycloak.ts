@@ -1,9 +1,9 @@
 import type KeycloakType from "keycloak-js";
-
+import { Mode } from "../utils/enableMode";
 let keycloak: KeycloakType | any;
 
-if (import.meta.env.MODE === "production") {
-  const { default: MockKeycloak } = await import("./MockKeycloak");
+if (import.meta.env.MODE === Mode) {
+  const { default: MockKeycloak } = await import("../mocks/MockKeycloak");
   keycloak = MockKeycloak;
 } else {
   const Keycloak = (await import("keycloak-js")).default;
