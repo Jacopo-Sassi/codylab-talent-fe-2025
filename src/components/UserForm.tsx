@@ -5,6 +5,7 @@ import type { Users } from "../generated/api";
 import { users } from "../lib/api/api";
 import { WorkloadContext } from "../pages/WorkloadContext";
 import classes from "./UserForm.module.css";
+import keycloak from "./keycloak";
 
 export function UserForm() {
   const { workloadData: usersData, refreshWorkload } =
@@ -13,6 +14,12 @@ export function UserForm() {
   const navigate = useNavigate();
   const { id: userId } = useParams();
   const currentUser = usersData.find((u) => u.id?.toString() === userId);
+
+  if (!keycloak.hasRealmRole("admin")) {
+    alert("Non hai i permessi per modificare un utente.");
+    navigate("/workload");
+    return null;
+  }
 
   const defaultValues = currentUser
     ? {
@@ -49,7 +56,6 @@ export function UserForm() {
           dailyHours: value.dailyHours,
         },
       };
-
       try {
         await save(userData);
         await refreshWorkload();
