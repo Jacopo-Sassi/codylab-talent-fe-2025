@@ -24,7 +24,7 @@ export function Actions() {
           )}
         </li>
         <li>
-          <button onClick={handleLogout} className={classes.link}>Logout</button>
+          <button onClick={handleLogout} className={classes.logoutBtn}>Logout</button>
         </li>
       </ul>
     </div>

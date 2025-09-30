@@ -1,6 +1,7 @@
 .actions ul {
   list-style: none;
   display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
@@ -21,4 +22,21 @@
 .link:hover {
   color: #007bff;
   outline: none;
+}
+
+.logoutBtn{
+  padding: 0.5rem 1rem;
+  background-color: #4a90e2;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  align-self: flex-start;
+}
+
+.logoutBtn:hover{
+  background-color: #007bff;
 }
