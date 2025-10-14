@@ -1,48 +1,51 @@
-import {
-  Configuration,
-  ProjectsApi,
-  SlotsApi,
-  TasksApi,
-  UsersApi,
-} from "../../generated/api";
-import keycloak from "../../components/keycloak";
+import { Configuration, ProjectsApi, SlotsApi, TasksApi, UsersApi, type Middleware } from "../../generated/api";
+import { msalInstance } from "../../main";
+import { loginRequest } from "../../authConfig";
 
 const BASE_PATH = "http://localhost:8090/api/v1";
+const authMiddleware: Middleware = {
+  pre: async ({ url, init }) => {
+    try {
+      const accounts = msalInstance.getAllAccounts();
 
-async function createConfig(): Promise<Configuration> {
-  try {
-    await keycloak.updateToken(70);
-  } catch (error) {
-    console.warn("Errore aggiornamento token", error);
-    keycloak.login();
-  }
+      if (accounts.length === 0) {
+        sessionStorage.clear();
+        msalInstance.loginRedirect(loginRequest);
+      }
 
-  return new Configuration({
-    basePath: BASE_PATH,
-    credentials: "include",
-    headers: {
-      Authorization: keycloak.token ? `Bearer ${keycloak.token}` : "",
-    },
-  });
-}
+      const account = accounts[0];
 
-function createProxy<T extends new (...args: any[]) => any>(ApiClass: T): InstanceType<T> {
-  return new Proxy({} as InstanceType<T>, {
-    get(_target, prop, _receiver) {
-      return async (...args: any[]) => {
-        const config = await createConfig();
-        const instance = new ApiClass(config);
-        const method = instance[prop as keyof InstanceType<T>];
-        if (typeof method === "function") {
-          return (method as Function).apply(instance, args);
+      try {
+        const response = await msalInstance.acquireTokenSilent({
+          ...loginRequest,
+          account,
+        });
+
+        if (response?.accessToken) {
+          const headers = new Headers(init.headers);
+          headers.set("Authorization", `Bearer ${response.accessToken}`);
+          return { url, init: { ...init, headers } };
+        } else {
+          msalInstance.acquireTokenRedirect({ ...loginRequest, account });
         }
-        return method;
-      };
-    },
-  });
-}
+      } catch (silentError) {
+        msalInstance.acquireTokenRedirect({ ...loginRequest, account });
+      }
+    } catch (err) {
+      console.warn("authMiddleware: errore generale:", err);
+      return Promise.reject(err);
+    }
+  },
+};
 
-export const projects = createProxy(ProjectsApi);
-export const slots = createProxy(SlotsApi);
-export const tasks = createProxy(TasksApi);
-export const users = createProxy(UsersApi);
+// Configurazioni standard con middleware
+const config = new Configuration({
+  basePath: BASE_PATH,
+  middleware: [authMiddleware],
+});
+
+export const projects = new ProjectsApi(config);
+export const slots = new SlotsApi(config);
+export const tasks = new TasksApi(config);
+export const users = new UsersApi(config);
+

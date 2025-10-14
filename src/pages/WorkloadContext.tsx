@@ -21,18 +21,12 @@ export function WorkloadContexts() {
 
   const loadWorkload = useCallback(async () => {
     setLoading(true);
-    try {
       const res = await users.getUsers({
         pageNumber: 0,
         size: 10,
         sort: "id",
       });
       setWorkloadData(res || []);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   }, []);
 
   const refreshWorkload = useCallback(async () => {

@@ -21,18 +21,12 @@ export function ProjectsContext() {
 
   const loadProjects = useCallback(async () => {
     setLoading(true);
-    try {
       const res = await projects.getProjects({
         pageNumber: 0,
         size: 10,
         sort: "id",
       });
       setProjectsData(res || []);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   }, []);
 
   const refreshProjects = useCallback(async () => {
@@ -48,7 +42,7 @@ export function ProjectsContext() {
       value={{
         projectsData,
         refreshProjects,
-        loading
+        loading,
       }}
     >
       <Outlet />

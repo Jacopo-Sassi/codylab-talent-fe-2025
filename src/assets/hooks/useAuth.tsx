@@ -1,39 +1,61 @@
-import { useRef, useState } from "react";
+import { useMsal } from "@azure/msal-react";
+import { useEffect, useState } from "react";
+import { loginRequest } from "../../authConfig";
 
-export function useAuth() {
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
-  const [token, setToken] = useState<string | undefined>(undefined);
+export const useAuth = () => {
+  const { instance, inProgress } = useMsal();
   const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [account, setAccount] = useState<any>(null);
 
-  const refreshInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-  const keycloakInstance = useRef<any>(null);
+  useEffect(() => {
+    const initAuth = async () => {
+      if (!instance) return;
 
-    const initialize = async () => {
       try {
-        const { default: keycloak } = await import("../../components/keycloak");
-        keycloakInstance.current = keycloak;
+        await instance.handleRedirectPromise();
 
-        if(!keycloak.didInitialize) {  
-        const auth = await keycloak.init({
-          onLoad: "login-required",
-          checkLoginIframe: false,
-          pkceMethod: "S256",
-          redirectUri: window.location.origin,       
-        });
-        setAuthenticated(auth);
-      }
-
-        setToken(keycloak.token);
-        setLoading(false);
-
+        const accounts = instance.getAllAccounts();
+        if (accounts.length > 0) {
+          const activeAccount = instance.getActiveAccount() || accounts[0];
+          instance.setActiveAccount(activeAccount);
+          setAccount(activeAccount);
+          setAuthenticated(true);
+        } else {
+          await instance.loginRedirect(loginRequest);
+        }
       } catch (err) {
-        console.error("Errore inizializzazione Keycloak", err);
+        console.error("Errore durante l'inizializzazione di MSAL:", err);
         setAuthenticated(false);
+      } finally {
         setLoading(false);
       }
     };
 
-    initialize();
-  
-  return { loading, authenticated, token };
-}
+    if (inProgress === "none") {
+      initAuth();
+    }
+  }, [instance, inProgress]);
+
+  const logout = () => {
+    setAuthenticated(false);
+    setAccount(null);
+    setLoading(false);
+    const accounts = instance.getAllAccounts();
+    if (accounts.length > 0) {
+      instance.logoutRedirect({
+        account: accounts[0],
+        postLogoutRedirectUri: window.location.origin,
+      });
+    } else {
+      window.location.href = window.location.origin;
+    }
+  };
+
+  return {
+    loading,
+    authenticated,
+    account,
+    logout,
+    };
+};
